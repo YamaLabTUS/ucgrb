@@ -1,0 +1,16 @@
+﻿tie,month_section,of_the_clock_section,TTC_forward,TTC_counter,Margin_forward,Margin_counter,GF_LFC_UP_forward_MAX,GF_LFC_UP_counter_MAX,GF_LFC_DOWN_forward_MAX,GF_LFC_DOWN_counter_MAX,Tert_UP_forward_MAX,Tert_UP_counter_MAX,Tert_DOWN_forward_MAX,Tert_DOWN_counter_MAX
+Tie-Line,Apr,weekday_day,450,450,87.3,171.3,100,100,100,100,100,100,100,100
+Tie-Line,May,weekday_day,450,450,96.3,174.3,100,100,100,100,100,100,100,100
+Tie-Line,Jun,weekday_day,450,450,93.3,174.3,100,100,100,100,100,100,100,100
+Tie-Line,Jul,weekday_day,450,450,87.3,141.3,100,100,100,100,100,100,100,100
+Tie-Line,Aug,weekday_day,450,450,87.3,141.3,100,100,100,100,100,100,100,100
+Tie-Line,Sep_1st,weekday_day,450,450,90.3,141.3,100,100,100,100,100,100,100,100
+Tie-Line,Sep_2nd,weekday_day,450,450,90.3,141.3,100,100,100,100,100,100,100,100
+Tie-Line,Oct,weekday_day,450,450,87.3,141.3,100,100,100,100,100,100,100,100
+Tie-Line,Nov_1st,weekday_day,450,450,78.3,165.3,100,100,100,100,100,100,100,100
+Tie-Line,Nov_2nd,weekday_day,450,450,78.3,165.3,100,100,100,100,100,100,100,100
+Tie-Line,Dec,weekday_day,450,450,63.3,159.3,100,100,100,100,100,100,100,100
+Tie-Line,Jan,weekday_day,450,450,57.3,156.3,100,100,100,100,100,100,100,100
+Tie-Line,Feb,weekday_day,450,450,66.3,159.3,100,100,100,100,100,100,100,100
+Tie-Line,Mar_1st,weekday_day,450,450,78.3,165.3,100,100,100,100,100,100,100,100
+Tie-Line,Mar_2nd,weekday_day,450,450,78.3,165.3,100,100,100,100,100,100,100,100

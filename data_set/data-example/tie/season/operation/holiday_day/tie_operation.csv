@@ -1,0 +1,16 @@
+﻿tie,month_section,of_the_clock_section,TTC_forward,TTC_counter,Margin_forward,Margin_counter,GF_LFC_UP_forward_MAX,GF_LFC_UP_counter_MAX,GF_LFC_DOWN_forward_MAX,GF_LFC_DOWN_counter_MAX,Tert_UP_forward_MAX,Tert_UP_counter_MAX,Tert_DOWN_forward_MAX,Tert_DOWN_counter_MAX
+Tie-Line,Apr,holiday_day,375,375,82.75,147.75,100,100,100,100,100,100,100,100
+Tie-Line,May,holiday_day,375,375,87.75,150.25,100,100,100,100,100,100,100,100
+Tie-Line,Jun,holiday_day,375,375,85.25,147.75,100,100,100,100,100,100,100,100
+Tie-Line,Jul,holiday_day,375,375,82.75,122.75,100,100,100,100,100,100,100,100
+Tie-Line,Aug,holiday_day,375,375,82.75,122.75,100,100,100,100,100,100,100,100
+Tie-Line,Sep_1st,holiday_day,375,375,85.25,122.75,100,100,100,100,100,100,100,100
+Tie-Line,Sep_2nd,holiday_day,375,375,85.25,122.75,100,100,100,100,100,100,100,100
+Tie-Line,Oct,holiday_day,375,375,85.25,122.75,100,100,100,100,100,100,100,100
+Tie-Line,Nov_1st,holiday_day,375,375,75.25,142.75,100,100,100,100,100,100,100,100
+Tie-Line,Nov_2nd,holiday_day,375,375,75.25,142.75,100,100,100,100,100,100,100,100
+Tie-Line,Dec,holiday_day,375,375,65.25,137.75,100,100,100,100,100,100,100,100
+Tie-Line,Jan,holiday_day,375,375,65.25,137.75,100,100,100,100,100,100,100,100
+Tie-Line,Feb,holiday_day,375,375,62.75,137.75,100,100,100,100,100,100,100,100
+Tie-Line,Mar_1st,holiday_day,375,375,77.75,145.25,100,100,100,100,100,100,100,100
+Tie-Line,Mar_2nd,holiday_day,375,375,77.75,145.25,100,100,100,100,100,100,100,100

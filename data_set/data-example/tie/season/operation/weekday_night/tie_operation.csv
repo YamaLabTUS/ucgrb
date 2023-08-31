@@ -1,0 +1,16 @@
+﻿tie,month_section,of_the_clock_section,TTC_forward,TTC_counter,Margin_forward,Margin_counter,GF_LFC_UP_forward_MAX,GF_LFC_UP_counter_MAX,GF_LFC_DOWN_forward_MAX,GF_LFC_DOWN_counter_MAX,Tert_UP_forward_MAX,Tert_UP_counter_MAX,Tert_DOWN_forward_MAX,Tert_DOWN_counter_MAX
+Tie-Line,Apr,weekday_night,375,375,75.25,142.75,100,100,100,100,100,100,100,100
+Tie-Line,May,weekday_night,375,375,85.25,147.75,100,100,100,100,100,100,100,100
+Tie-Line,Jun,weekday_night,375,375,87.75,147.75,100,100,100,100,100,100,100,100
+Tie-Line,Jul,weekday_night,375,375,85.25,122.75,100,100,100,100,100,100,100,100
+Tie-Line,Aug,weekday_night,375,375,87.75,122.75,100,100,100,100,100,100,100,100
+Tie-Line,Sep_1st,weekday_night,375,375,87.75,125.25,100,100,100,100,100,100,100,100
+Tie-Line,Sep_2nd,weekday_night,375,375,87.75,125.25,100,100,100,100,100,100,100,100
+Tie-Line,Oct,weekday_night,375,375,85.25,122.75,100,100,100,100,100,100,100,100
+Tie-Line,Nov_1st,weekday_night,375,375,75.25,142.75,100,100,100,100,100,100,100,100
+Tie-Line,Nov_2nd,weekday_night,375,375,75.25,142.75,100,100,100,100,100,100,100,100
+Tie-Line,Dec,weekday_night,375,375,60.25,135.25,100,100,100,100,100,100,100,100
+Tie-Line,Jan,weekday_night,375,375,47.75,130.25,100,100,100,100,100,100,100,100
+Tie-Line,Feb,weekday_night,375,375,47.75,130.25,100,100,100,100,100,100,100,100
+Tie-Line,Mar_1st,weekday_night,375,375,65.25,137.75,100,100,100,100,100,100,100,100
+Tie-Line,Mar_2nd,weekday_night,375,375,65.25,137.75,100,100,100,100,100,100,100,100

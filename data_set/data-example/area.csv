@@ -1,0 +1,3 @@
+﻿name,PV_cap,WF_cap,C_short,C_surplus,C_Tert_short,C_PV_suppr,C_WF_suppr,R_PV_res_UP,R_PV_res_DOWN,R_WF_res_UP,R_WF_res_DOWN
+Area_A,7580,1880,100000,100000,1000,0,0,50,50,50,50
+Area_B,5220,2670,100000,100000,1000,0,0,50,50,50,50

@@ -1,0 +1,2 @@
+﻿name,from,to,C_tie_penalty,C_tie_penalty_GF_LFC_UP,C_tie_penalty_GF_LFC_DOWN,C_tie_penalty_Tert_UP,C_tie_penalty_Tert_DOWN,TTC_forward,TTC_counter,Margin_forward,Margin_counter,GF_LFC_UP_forward_MAX,GF_LFC_UP_counter_MAX,GF_LFC_DOWN_forward_MAX,GF_LFC_DOWN_counter_MAX,Tert_UP_forward_MAX,Tert_UP_counter_MAX,Tert_DOWN_forward_MAX,Tert_DOWN_counter_MAX
+Tie-Line,Area_B,Area_A,0.002,0.002,0.002,0.002,0.002,400,400,50,50,100,100,100,100,100,100,100,100
