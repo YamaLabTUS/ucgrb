@@ -98,7 +98,7 @@ areas: ["Hokkaido", "Tohoku", "Tokyo", "Chubu", "Hokuriku", "Kansai", "Chugoku",
 - `"season"`: 月や時間帯で指定
 - `"timeline"`: 最適化時間粒度毎に設定
 
-## Guribiソルバのパラメータ設定
+## Gurobiソルバのパラメータ設定
 
 ### grb_MIPGap
 
