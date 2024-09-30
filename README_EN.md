@@ -4,14 +4,6 @@
 
 This Python package can perform unit commitment (UC) optimization for multi-area power systems connected by tie lines using Gurobi Optimizer.
 
-- **This repository is private and can only be accessed by accounts belonging to the Yamaguchi Lab Organization "[YamaLabTUS](https://github.com/YamaLabTUS/)".**
-- **In order to implement ucgrb as described in the following document, the directory name must be changed to "ucgrb" instead of "ucgrb-private" when cloning this repository. For example, when cloning with the command, the following must be described.**
-
-   ```cmd
-   git clone https://github.com/YamaLabTUS/ucgrb-private.git ucgrb
-   ```
-   **Reference: [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)**
-
 
 ## Table of contents
 

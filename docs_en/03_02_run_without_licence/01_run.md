@@ -12,12 +12,7 @@ As an example, we show the procedure for implementation with the following setti
 The procedure is as follows:
 
 1. Clone this registry.
-     - **Caution!** When cloning, the directory name must be changed to "**ucgrb**" instead of "**ucgrb-private**". For example, when cloning with the command, it must be written as follows.
 
-       ```cmd
-       git clone https://github.com/YamaLabTUS/ucgrb-private.git ucgrb
-       ```
-       **Reference: [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)**
 
 
 2. Create the following script "main.py" and configuration file "config.yml" in the same directory as this registry.
