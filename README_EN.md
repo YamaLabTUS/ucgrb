@@ -1,4 +1,4 @@
-# ucgrb (repository for study)
+# ucgrb
 
 **[README in JP](README.md)**
 

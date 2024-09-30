@@ -1,4 +1,4 @@
-# ucgrb（研究用リポジトリ）
+# ucgrb
 
 **[Click here for the README in English.](README_EN.md)**
 
@@ -60,7 +60,7 @@ Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以�
 7. 開発者に向けて
    1. [開発者向け設定値](docs/07_for_developer/01_config_setting.md)
    2. [自動整形に関して](docs/07_for_developer/02_formatter.md)
-8. [v2で用いていた電力系統データCSVファイルからの変更方法](docs/08_how_to_modify_csvfile.md)
+8. [v3で用いていた電力系統データCSVファイルからの変更方法](docs/08_how_to_modify_csvfile.md)
 
 
 ## ライセンス
