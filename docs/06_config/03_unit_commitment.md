@@ -199,21 +199,44 @@ UCを行う際の問題設定は、設定ファイルの記載を編集するこ
 
 ## ESS（エネルギー貯蔵システム）
 
-### set_e_ess_plan_constrs
+### make_dchg_chg_ess_continuous
+
+- **書式: ブール値**
+- **デフォルト値: `False`**
+-
+関数「make_grb_model」の中で、エネルギー貯蔵システムの運転状況に関するバイナリ変数$dchg_{t,ess}, chg_{t,ess}$を連続変数に変換するか否かを決める変数
+
+### set_e_ess_schedule_constrs
 
 - **書式: ブール値**
 - **デフォルト値: `False`**
 
-関数「make_grb_model」の中で、エネルギー貯蔵システムの蓄電量計画運用制約を考慮するか否かを決める変数
+関数「make_grb_model」の中で、エネルギー貯蔵システムの蓄電量計画運用制約: 特定時間の蓄電量指定制約を考慮するか否かを決める変数
 
-### set_e_ess_bc_constrs
+### set_e_ess_balance_constrs
 
 - **書式: ブール値**
 - **デフォルト値: **
-  - **set_e_ess_plan_constrs = `False` のとき: `True`**
-  - **set_e_ess_plan_constrs = `True` のとき: `False`**
+  - **set_e_ess_schedule_constrs = `False` のとき: `True`**
+  - **set_e_ess_schedule_constrs = `True` のとき: `False`**
 
-関数「make_grb_model」の中で、エネルギー貯蔵システムの蓄電量境界条件制約を考慮するか否かを決める変数
+関数「make_grb_model」の中で、エネルギー貯蔵システムの蓄電量境界条件制約: 開始時間・終了時間の蓄電量一致条件制約を考慮するか否かを決める変数
+
+## 原子力・火力発電機
+
+### set_ramp_constr
+
+- **書式: ブール値**
+- **デフォルト値: `True`**
+-
+関数「make_grb_model」の中で、原子力・火力発電機の出力変化速度制約制約を考慮するか否かを決める変数
+
+### make_u_continuous
+
+- **書式: ブール値**
+- **デフォルト値: `False`**
+-
+関数「make_grb_model」の中で、原子力・火力発電機の起動停止に関するバイナリ変数$u_{t,g},$su_{t,g},sd_{t,g}$を連続変数に変換するか否かを決める変数
 
 ## 原子力発電機
 

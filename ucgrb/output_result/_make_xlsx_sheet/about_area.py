@@ -41,12 +41,12 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
     _append_col(ws, _header_col)
     _start_col = ws.max_column
 
+    tsg_ratio = int(uc_data.config["time_series_granularity"]) / 60
+
     _value_col = ["Others"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = uc_dicts.others_para["value"][time, area]
-        else:
-            _value = 0
+        _value = uc_dicts.others_para["value"][time, area]
+
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -89,25 +89,19 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["WF"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                - uc_dicts.p_wf_suppr[time, area].X
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["PV"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                - uc_dicts.p_pv_suppr[time, area].X
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            - uc_dicts.p_pv_suppr[time, area].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -137,10 +131,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Demand"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = uc_dicts.demand_para["value"][time, area]
-        else:
-            _value = 0
+        _value = uc_dicts.demand_para["value"][time, area]
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -173,6 +164,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
             _value = gp.quicksum(
                 uc_dicts.p[time, name, g_type, area].X
                 * uc_dicts.generation_para["C_coef"][name, g_type, area]
+                * tsg_ratio
                 for name, g_type, area in uc_dicts.n_and_t_generation.select("*", g_type, area)
             ).getValue()
             _value_col.append(_value)
@@ -187,6 +179,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
             _value = gp.quicksum(
                 uc_dicts.u[time, name, g_type, area].X
                 * uc_dicts.generation_para["C_intc"][name, g_type, area]
+                * tsg_ratio
                 for name, g_type, area in uc_dicts.n_and_t_generation.select("*", g_type, area)
             ).getValue()
             _value_col.append(_value)
@@ -212,7 +205,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
     _value_col = ["Short"]
     _sum = 0
     for time in timeline:
-        _value = uc_dicts.p_short[time, area].X * uc_dicts.area_para["C_short"][area]
+        _value = uc_dicts.p_short[time, area].X * uc_dicts.area_para["C_short"][area] * tsg_ratio
         _value_col.append(_value)
         _sum += _value
     _value_col.append(_sum)
@@ -222,7 +215,9 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
     _value_col = ["Surplus"]
     _sum = 0
     for time in timeline:
-        _value = uc_dicts.p_surplus[time, area].X * uc_dicts.area_para["C_surplus"][area]
+        _value = (
+            uc_dicts.p_surplus[time, area].X * uc_dicts.area_para["C_surplus"][area] * tsg_ratio
+        )
         _value_col.append(_value)
         _sum += _value
     _value_col.append(_sum)
@@ -232,7 +227,9 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
     _value_col = ["Suppression of PV"]
     _sum = 0
     for time in timeline:
-        _value = uc_dicts.p_pv_suppr[time, area].X * uc_dicts.area_para["C_PV_suppr"][area]
+        _value = (
+            uc_dicts.p_pv_suppr[time, area].X * uc_dicts.area_para["C_PV_suppr"][area] * tsg_ratio
+        )
         _value_col.append(_value)
         _sum += _value
     _value_col.append(_sum)
@@ -242,7 +239,9 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
     _value_col = ["Suppression of WF"]
     _sum = 0
     for time in timeline:
-        _value = uc_dicts.p_wf_suppr[time, area].X * uc_dicts.area_para["C_WF_suppr"][area]
+        _value = (
+            uc_dicts.p_wf_suppr[time, area].X * uc_dicts.area_para["C_WF_suppr"][area] * tsg_ratio
+        )
         _value_col.append(_value)
         _sum += _value
     _value_col.append(_sum)
@@ -252,7 +251,11 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
     _value_col = ["Short of Tertiary (UP)"]
     _sum = 0
     for time in timeline:
-        _value = uc_dicts.p_tert_up_short[time, area].X * uc_dicts.area_para["C_Tert_short"][area]
+        _value = (
+            uc_dicts.p_tert_up_short[time, area].X
+            * uc_dicts.area_para["C_Tert_short"][area]
+            * tsg_ratio
+        )
         _value_col.append(_value)
         _sum += _value
     _value_col.append(_sum)
@@ -263,7 +266,9 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
     _sum = 0
     for time in timeline:
         _value = (
-            uc_dicts.p_tert_down_short[time, area].X * uc_dicts.area_para["C_Tert_short"][area]
+            uc_dicts.p_tert_down_short[time, area].X
+            * uc_dicts.area_para["C_Tert_short"][area]
+            * tsg_ratio
         )
         _value_col.append(_value)
         _sum += _value
@@ -275,7 +280,9 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
     _sum = 0
     for time in timeline:
         _value = gp.quicksum(
-            uc_dicts.e_ess_short[time, ess, area].X * uc_dicts.ess_para["C_ess_short"][ess, area]
+            uc_dicts.e_ess_short[time, ess, area].X
+            * uc_dicts.ess_para["C_ess_short"][ess, area]
+            * tsg_ratio
             for ess, area in uc_dicts.ess.select("*", area)
         ).getValue()
         _value_col.append(_value)
@@ -290,6 +297,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
         _value = gp.quicksum(
             uc_dicts.e_ess_surplus[time, ess, area].X
             * uc_dicts.ess_para["C_ess_surplus"][ess, area]
+            * tsg_ratio
             for ess, area in uc_dicts.ess.select("*", area)
         ).getValue()
         _value_col.append(_value)
@@ -338,6 +346,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
             _value = gp.quicksum(
                 uc_dicts.p[time, name, g_type, area].X
                 * uc_dicts.generation_para["C_coef_CO2"][name, g_type, area]
+                * tsg_ratio
                 for name, g_type, area in uc_dicts.n_and_t_generation.select("*", g_type, area)
             ).getValue()
             _value_col.append(_value)
@@ -352,6 +361,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
             _value = gp.quicksum(
                 uc_dicts.u[time, name, g_type, area].X
                 * uc_dicts.generation_para["C_intc_CO2"][name, g_type, area]
+                * tsg_ratio
                 for name, g_type, area in uc_dicts.n_and_t_generation.select("*", g_type, area)
             ).getValue()
             _value_col.append(_value)
@@ -446,46 +456,37 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Required (demand)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.demand_para["value"][time, area]
-                * uc_dicts.demand_para["R_GF_LFC_UP"][time, area]
-                / 100
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.demand_para["value"][time, area]
+            * uc_dicts.demand_para["R_GF_LFC_UP"][time, area]
+            / 100
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Required (PV)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                (
-                    uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                    - uc_dicts.p_pv_suppr[time, area].X
-                )
-                * uc_dicts.pv_para["R_GF_LFC_UP"][time, area]
-                / 100
+        _value = (
+            (
+                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+                - uc_dicts.p_pv_suppr[time, area].X
             )
-        else:
-            _value = 0
+            * uc_dicts.pv_para["R_GF_LFC_UP"][time, area]
+            / 100
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Required (WF)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                (
-                    uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                    - uc_dicts.p_wf_suppr[time, area].X
-                )
-                * uc_dicts.wf_para["R_GF_LFC_UP"][time, area]
-                / 100
+        _value = (
+            (
+                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+                - uc_dicts.p_wf_suppr[time, area].X
             )
-        else:
-            _value = 0
+            * uc_dicts.wf_para["R_GF_LFC_UP"][time, area]
+            / 100
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -556,46 +557,38 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Required (demand)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.demand_para["value"][time, area]
-                * uc_dicts.demand_para["R_GF_LFC_DOWN"][time, area]
-                / 100
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.demand_para["value"][time, area]
+            * uc_dicts.demand_para["R_GF_LFC_DOWN"][time, area]
+            / 100
+        )
+
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Required (PV)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                (
-                    uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                    - uc_dicts.p_pv_suppr[time, area].X
-                )
-                * uc_dicts.pv_para["R_GF_LFC_DOWN"][time, area]
-                / 100
+        _value = (
+            (
+                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+                - uc_dicts.p_pv_suppr[time, area].X
             )
-        else:
-            _value = 0
+            * uc_dicts.pv_para["R_GF_LFC_DOWN"][time, area]
+            / 100
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Required (WF)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                (
-                    uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                    - uc_dicts.p_wf_suppr[time, area].X
-                )
-                * uc_dicts.wf_para["R_GF_LFC_DOWN"][time, area]
-                / 100
+        _value = (
+            (
+                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+                - uc_dicts.p_wf_suppr[time, area].X
             )
-        else:
-            _value = 0
+            * uc_dicts.wf_para["R_GF_LFC_DOWN"][time, area]
+            / 100
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -672,11 +665,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Required (PV)"]
     for time in timeline:
-        if (
-            time in uc_dicts.timeline
-            and uc_data.config["consider_required_tert_up_by_pv"]
-            and uc_dicts.u_tert
-        ):
+        if uc_data.config["consider_required_tert_up_by_pv"] and uc_dicts.u_tert:
             _value = (
                 uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
                 - uc_dicts.p_pv_suppr[time, area].X
@@ -689,11 +678,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Required (WF)"]
     for time in timeline:
-        if (
-            time in uc_dicts.timeline
-            and uc_data.config["consider_required_tert_up_by_wf"]
-            and uc_dicts.u_tert
-        ):
+        if uc_data.config["consider_required_tert_up_by_wf"] and uc_dicts.u_tert:
             _value = (
                 uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
                 - uc_dicts.p_wf_suppr[time, area].X
@@ -776,11 +761,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Required (PV)"]
     for time in timeline:
-        if (
-            time in uc_dicts.timeline
-            and uc_data.config["consider_required_tert_down_by_pv"]
-            and uc_dicts.u_tert
-        ):
+        if uc_data.config["consider_required_tert_down_by_pv"] and uc_dicts.u_tert:
             _value = (
                 uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["upper"][time, area]
                 - uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
@@ -793,11 +774,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Required (WF)"]
     for time in timeline:
-        if (
-            time in uc_dicts.timeline
-            and uc_data.config["consider_required_tert_down_by_wf"]
-            and uc_dicts.u_tert
-        ):
+        if uc_data.config["consider_required_tert_down_by_wf"] and uc_dicts.u_tert:
             _value = (
                 uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["upper"][time, area]
                 - uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
@@ -863,13 +840,9 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Required"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.demand_para["value"][time, area]
-                * uc_dicts.demand_para["M_req"][time, area]
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.demand_para["value"][time, area] * uc_dicts.demand_para["M_req"][time, area]
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -896,15 +869,12 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["_TRANSPARENT"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                - uc_dicts.p_pv_suppr[time, area].X
-                - uc_dicts.p_pv_tert_down[time, area].X
-                - uc_dicts.p_pv_gf_lfc_down[time, area].X
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            - uc_dicts.p_pv_suppr[time, area].X
+            - uc_dicts.p_pv_tert_down[time, area].X
+            - uc_dicts.p_pv_gf_lfc_down[time, area].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -934,46 +904,34 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["PV Net"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                - uc_dicts.p_pv_suppr[time, area].X
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            - uc_dicts.p_pv_suppr[time, area].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["PV Output"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-        else:
-            _value = 0
+        _value = uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Reserve limit (Up)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-            _value -= uc_dicts.p_pv_suppr[time, area].X * (
-                1 - uc_dicts.area_para["R_PV_res_UP"][area] / 100
-            )
-        else:
-            _value = 0
+        _value = uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+        _value -= uc_dicts.p_pv_suppr[time, area].X * (
+            1 - uc_dicts.area_para["R_PV_res_UP"][area] / 100
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Reserve limit (Down)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                - uc_dicts.p_pv_suppr[time, area].X
-            ) * (1 - uc_dicts.area_para["R_PV_res_DOWN"][area] / 100)
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            - uc_dicts.p_pv_suppr[time, area].X
+        ) * (1 - uc_dicts.area_para["R_PV_res_DOWN"][area] / 100)
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -1000,15 +958,12 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["_TRANSPARENT"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                - uc_dicts.p_wf_suppr[time, area].X
-                - uc_dicts.p_wf_tert_down[time, area].X
-                - uc_dicts.p_wf_gf_lfc_down[time, area].X
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+            - uc_dicts.p_wf_tert_down[time, area].X
+            - uc_dicts.p_wf_gf_lfc_down[time, area].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -1038,46 +993,34 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["WF Net"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                - uc_dicts.p_wf_suppr[time, area].X
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["WF Output"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-        else:
-            _value = 0
+        _value = uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Reserve limit (Up)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-            _value -= uc_dicts.p_wf_suppr[time, area].X * (
-                1 - uc_dicts.area_para["R_WF_res_UP"][area] / 100
-            )
-        else:
-            _value = 0
+        _value = uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+        _value -= uc_dicts.p_wf_suppr[time, area].X * (
+            1 - uc_dicts.area_para["R_WF_res_UP"][area] / 100
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Reserve limit (Down)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                - uc_dicts.p_wf_suppr[time, area].X
-            ) * (1 - uc_dicts.area_para["R_WF_res_DOWN"][area] / 100)
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+        ) * (1 - uc_dicts.area_para["R_WF_res_DOWN"][area] / 100)
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -1157,7 +1100,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
 
     _value_col = ["Energy Plan"]
     for time in timeline:
-        if uc_data.config["set_e_ess_bc_constrs"] and time == uc_dicts.timeline[-1]:
+        if uc_data.config["set_e_ess_balance_constrs"] and time == uc_dicts.timeline.iloc[-1]:
             _value = gp.quicksum(
                 uc_dicts.ess_para["E_CAP"][name, area]
                 * uc_dicts.ess_para["E_R_base"][name, area]
@@ -1165,7 +1108,7 @@ def about_area(ws, period_name, timeline, time_format, area, m, uc_data, uc_dict
                 for name, area in uc_dicts.ess.select("*", area)
             ).getValue()
         elif (
-            uc_data.config["set_e_ess_plan_constrs"]
+            uc_data.config["set_e_ess_schedule_constrs"]
             and time in uc_dicts.whole_timeline_ess_plan.values
         ):
             _value = gp.quicksum(

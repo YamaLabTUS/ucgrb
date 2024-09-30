@@ -24,7 +24,7 @@ def _make_whole_timeline_dicts(uc_data, uc_dicts):
     # 'whole_timeline'の作成
     _s = uc_data.config["rolling_opt_list"][0]["start_time"]
     _e = uc_data.config["rolling_opt_list"][-1]["end_time"]
-    _f = str(uc_data.config["time_particle_size"]) + "min"
+    _f = str(uc_data.config["time_series_granularity"]) + "min"
     _df = pd.date_range(_s, _e, freq=_f).to_series().dt.strftime(_fmt)
     uc_dicts.whole_timeline = _df
 
@@ -33,7 +33,7 @@ def _make_whole_timeline_dicts(uc_data, uc_dicts):
         hours=uc_data.config["rolling_opt_list"][0]["pre_period_hours"]
     )
     _e_pre = uc_data.config["rolling_opt_list"][0]["start_time"] - timedelta(
-        minutes=uc_data.config["time_particle_size"]
+        minutes=uc_data.config["time_series_granularity"]
     )
     _df = pd.date_range(_s_pre, _e_pre, freq=_f).to_series().dt.strftime(_fmt)
     uc_dicts.whole_timeline_w_pre_period = pd.concat([_df, uc_dicts.whole_timeline])

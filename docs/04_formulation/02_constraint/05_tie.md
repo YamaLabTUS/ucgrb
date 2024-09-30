@@ -5,7 +5,7 @@
 - GF&LFC調整力や三次調整力も融通することができる。
   - 設定値を変更することで、融通できる調整力に制限を掛ける事ができる。
 - 連系線の運用容量とマージンを全期間固定値とするか、月や時間帯で指定するか、最適化時間粒度毎に指定するか選択することができる。デフォルトでは、全期間固定である。
-  - デフォルト設定では、当日計画においてマージンを0とすることで、前日計画よりも地域間融通の猶予を与えることができる。
+- 前日計画で確保されたマージンは、当日計画において0となり前日計画よりも多くの地域間融通容量を利用できるようになるか、当日計画でも同じ容量だけマージンを保持するか、選択することができる。デフォルトでは、当日計画のマージンは0となるよう、設定されている。
 
 ![Tie operation](../../img/04/tie_01.png)
 
@@ -185,13 +185,13 @@ $$
 
 
 
-| 条件名                                     | デフォルト | 設定ファイル上での設定名                     | Falseとしたときの上記式からの変更内容                        |
-| :----------------------------------------- | :--------- | :------------------------------------------- | :----------------------------------------------------------- |
-| 連系線による電力融通の有無                 | True       | flexible_p_tie                               | 融通電力量 $p_{t,tie}^{\text{forward}}$ , $p_{t,tie}^{\text{counter}}$を0に固定する |
-| 連系線によるGF&LFC上向き調整力融通の有無   | True       | flexible_p_tie_gf_lfc_up                     | 融通されるGF&LFC上向き調整力 $p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, forward}}$ , $p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, counter}}$ を0に固定する |
+| 条件名                                     | デフォルト | 設定ファイル上での設定名                     | Falseとしたときの上記式からの変更内容                                                                                                                |
+| :----------------------------------------- | :--------- | :------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 連系線による電力融通の有無                 | True       | flexible_p_tie                               | 融通電力量 $p_{t,tie}^{\text{forward}}$ , $p_{t,tie}^{\text{counter}}$を0に固定する                                                                  |
+| 連系線によるGF&LFC上向き調整力融通の有無   | True       | flexible_p_tie_gf_lfc_up                     | 融通されるGF&LFC上向き調整力 $p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, forward}}$ , $p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, counter}}$ を0に固定する     |
 | 連系線によるGF&LFC下向き調整力融通の有無   | False      | flexible_p_tie_gf_lfc_down                   | 融通されるGF&LFC下向き調整力 $p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, forward}}$ , $p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, counter}}$ を0に固定する |
-| 連系線による3次上向き調整力融通の有無      | True       | flexible_p_tie_tert_up                       | 融通される三次上向き調整力 $p_{t,tie}^{\text{Tert}\,\text{UP, forward}}$ , $p_{t,tie}^{\text{Tert}\,\text{UP, counter}}$を0に固定する |
-| 連系線による3次下向き調整力融通の有無      | False      | flexible_p_tie_tert_down                     | 融通される三次下向き調整力 $p_{t,tie}^{\text{Tert}\,\text{DOWN, forward}}$ , $p_{t,tie}^{\text{Tert}\,\text{DOWN, counter}}$ を0に固定する |
-| 連系線の運用容量制約の考慮                 | True       | consider_TTC                                 | 運用容量 $P_{t,tie}^{\text{TTC, forward}}$ , $P_{t,tie}^{\text{TTC, counter}}$ を100倍にする |
-| 連系線の融通調整力最大値制約の考慮         | False      | consider_maximum_ reserve_constraint_for_tie | 連系線の最大融通調整力制約の式（5）から（12）までを考慮しない |
-| 当日計画における連系線の運用マージンの考慮 | False      | consider_tie_margin_in_intra-day             | 当日計画のみ、連系線の運用マージン $P_{t,tie}^{\text{Margin, forward}}$ , $P_{t,tie}^{\text{Margin, counter}}$を0にする。 |
+| 連系線による3次上向き調整力融通の有無      | True       | flexible_p_tie_tert_up                       | 融通される三次上向き調整力 $p_{t,tie}^{\text{Tert}\,\text{UP, forward}}$ , $p_{t,tie}^{\text{Tert}\,\text{UP, counter}}$を0に固定する                |
+| 連系線による3次下向き調整力融通の有無      | False      | flexible_p_tie_tert_down                     | 融通される三次下向き調整力 $p_{t,tie}^{\text{Tert}\,\text{DOWN, forward}}$ , $p_{t,tie}^{\text{Tert}\,\text{DOWN, counter}}$ を0に固定する           |
+| 連系線の運用容量制約の考慮                 | True       | consider_TTC                                 | 運用容量 $P_{t,tie}^{\text{TTC, forward}}$ , $P_{t,tie}^{\text{TTC, counter}}$ を100倍にする                                                         |
+| 連系線の融通調整力最大値制約の考慮         | False      | consider_maximum_ reserve_constraint_for_tie | 連系線の最大融通調整力制約の式（5）から（12）までを考慮しない                                                                                        |
+| 当日計画における連系線の運用マージンの考慮 | False      | consider_tie_margin_in_intra-day             | 当日計画のみ、連系線の運用マージン $P_{t,tie}^{\text{Margin, forward}}$ , $P_{t,tie}^{\text{Margin, counter}}$を0にする。                            |

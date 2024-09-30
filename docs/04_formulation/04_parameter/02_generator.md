@@ -21,7 +21,7 @@ $$
        & : 大規模発電機 g の最小出力 [\text{MW}]
       \\
       R_{t,g}^{\text{GF\\&LFC}\,\text{MAX}}
-       & : 大規模発電機 g の\text{GF\\&LFC}調整力確保可能量 [\\%]
+       & : 大規模発電機 g の\text{GF\\&LFC}調整力確保可能量 [\\%\text{MW}]
       \\
       M_{g}
        & : 大規模発電機 g の単位慣性定数 [\text{MW}\cdot\text{s/MVA}]
@@ -41,10 +41,10 @@ $$
 
 $$
 \begin{array}{ll}
-      ReqRunTime_{g}
+      MinUpTime_{g}
        & : 原子力・火力発電機 g の最小運転時間 [\text{h}]
       \\
-      ReqStopTime_{g}
+      MinDownTime_{g}
        & : 原子力・火力発電機 g の最小停止時間 [\text{h}]
       \\
       U_{t,g}^{\text{INHE}}
@@ -55,6 +55,9 @@ $$
       \\
       SD_{t,g}^{\text{INHE}}
        & : 前回最適化で時刻 t における原子力・火力発電機 g が停止したか否か
+      \\
+      R_{g}^{\text{ramp,MAX}}
+       & : 原子力・火力発電機 g の最大出力変化速 [\\%\text{MW}\/分]
 \end{array}
 $$
 

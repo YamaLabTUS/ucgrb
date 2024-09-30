@@ -21,6 +21,8 @@ def _set_variables(uc_data):
         uc_data.config["set_su"] = True
     if "set_sd" not in uc_data.config:
         uc_data.config["set_sd"] = True
+    if "make_u_continuous" not in uc_data.config:
+        uc_data.config["make_u_continuous"] = False
 
     if "set_p_pv_suppr" not in uc_data.config:
         uc_data.config["set_p_pv_suppr"] = True
@@ -49,6 +51,8 @@ def _set_variables(uc_data):
         uc_data.config["set_e_ess_surplus"] = True
     if "set_dchg_and_chg_ess" not in uc_data.config:
         uc_data.config["set_dchg_and_chg_ess"] = True
+    if "make_dchg_chg_ess_continuous" not in uc_data.config:
+        uc_data.config["make_dchg_chg_ess_continuous"] = False
 
     if "set_p_tie" not in uc_data.config:
         uc_data.config["set_p_tie"] = True

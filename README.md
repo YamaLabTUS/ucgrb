@@ -1,6 +1,19 @@
-# ucgrb
+# ucgrb（研究用リポジトリ）
+
+**[Click here for the README in English.](README_EN.md)**
+
 Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以下UC）最適化を実施するためのPythonパッケージ。
 連系線で接続された複数地域の電力系統を対象としたUC最適化を実施することができる。
+
+- **本リポジトリはプライベートであり、山口研研究室のOrganization「[YamaLabTUS](https://github.com/YamaLabTUS/)」に属しているアカウントのみアクセスすることができる。**
+- **従来のバージョンv2と入力CSVファイルのフォーマットが一部変化している。そのため、いままで用いていた入力CSVファイルを修正しなくてはいけない。「[v2で用いていた電力系統データCSVファイルからの変更方法](docs/08_how_to_modify_csvfile.md)」にその手順を示す。**
+- **下記ドキュメントに記載する通りにucgrbを実施するためには、本リポジトリをクローンする際、ディレクトリ名を「ucgrb-private」ではなく、「ucgrb」に変更しなくてはいけない。例えば、コマンドでクローンを行う際には、以下のように記載する必要がある。**
+
+   ```cmd
+   git clone https://github.com/YamaLabTUS/ucgrb-private.git ucgrb
+   ```
+   **参考URL: [https://git-scm.com/book/ja/v2/Git-の基本-Git-リポジトリの取得](https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E5%9F%BA%E6%9C%AC-Git-%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AE%E5%8F%96%E5%BE%97)**
+
 
 ## 目次
 
@@ -40,6 +53,7 @@ Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以�
       1. [原子力・火力発電機の燃料費関数出力比例係数算出方法](docs/04_formulation/06_appendix/01_fuel_cost.md)
       2. [原子力・火力発電機の最大出力・最小出力算出方法](docs/04_formulation/06_appendix/02_max_min_output.md)
       3. [大規模発電機のCO<sub>2</sub>排出量算出方法](docs/04_formulation/06_appendix/03_emission.md)
+      4. [時間粒度の変更による定式内容の変化](docs/04_formulation/06_appendix/04_time_series_granularity.md)
 5. 電力系統データCSVファイルの記述方法
    1. [概要](docs/05_csvfile/01_about.md)
    2. [発電機データ](docs/05_csvfile/02_generation.md)
@@ -55,7 +69,7 @@ Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以�
 7. 開発者に向けて
    1. [開発者向け設定値](docs/07_for_developer/01_config_setting.md)
    2. [自動整形に関して](docs/07_for_developer/02_formatter.md)
-
+8. [v2で用いていた電力系統データCSVファイルからの変更方法](docs/08_how_to_modify_csvfile.md)
 
 
 ## ライセンス

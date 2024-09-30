@@ -27,7 +27,7 @@ def _make_e_ess_plan_dicts(uc_data, uc_dicts):
 
     for _n, _a in uc_dicts.ess:
         if _n not in _data.columns:
-            if uc_data.config["set_e_ess_plan_constrs"]:
+            if uc_data.config["set_e_ess_schedule_constrs"]:
                 message = "*** There is not " + _n + " in E_R_plan.csv ***"
                 warnings.warn(message)
             continue

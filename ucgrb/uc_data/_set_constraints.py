@@ -28,12 +28,14 @@ def _set_constraints(uc_data):
         uc_data.config["set_e_max_constrs"] = True
     if "set_start_up_and_shout_down_constrs" not in uc_data.config:
         uc_data.config["set_start_up_and_shout_down_constrs"] = True
-    if "set_req_run_time_constrs" not in uc_data.config:
-        uc_data.config["set_req_run_time_constrs"] = True
-    if "set_req_stop_time_constrs" not in uc_data.config:
-        uc_data.config["set_req_stop_time_constrs"] = True
+    if "set_min_up_time_constrs" not in uc_data.config:
+        uc_data.config["set_min_up_time_constrs"] = True
+    if "set_min_down_time_constrs" not in uc_data.config:
+        uc_data.config["set_min_down_time_constrs"] = True
     if "set_planned_outage_constrs" not in uc_data.config:
         uc_data.config["set_planned_outage_constrs"] = True
+    if "set_ramp_constrs" not in uc_data.config:
+        uc_data.config["set_ramp_constrs"] = True
     if "set_must_run_operation_of_nucl_constrs" not in uc_data.config:
         uc_data.config["set_must_run_operation_of_nucl_constrs"] = True
 
@@ -58,13 +60,13 @@ def _set_constraints(uc_data):
         uc_data.config["set_e_ess_max_constrs"] = True
     if "set_e_ess_min_constrs" not in uc_data.config:
         uc_data.config["set_e_ess_min_constrs"] = True
-    if "set_e_ess_plan_constrs" not in uc_data.config:
-        uc_data.config["set_e_ess_plan_constrs"] = False
-    if "set_e_ess_bc_constrs" not in uc_data.config:
-        if uc_data.config["set_e_ess_plan_constrs"] is False:
-            uc_data.config["set_e_ess_bc_constrs"] = True
+    if "set_e_ess_schedule_constrs" not in uc_data.config:
+        uc_data.config["set_e_ess_schedule_constrs"] = False
+    if "set_e_ess_balance_constrs" not in uc_data.config:
+        if uc_data.config["set_e_ess_schedule_constrs"] is False:
+            uc_data.config["set_e_ess_balance_constrs"] = True
         else:
-            uc_data.config["set_e_ess_bc_constrs"] = False
+            uc_data.config["set_e_ess_balance_constrs"] = False
     if "set_planned_outage_for_ess_constrs" not in uc_data.config:
         uc_data.config["set_planned_outage_for_ess_constrs"] = True
 

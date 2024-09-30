@@ -20,12 +20,12 @@
 $$
 \begin{align}
    P_{g}^{\text{MAX}}
-    & = \left( 1 - \frac{IHR_{g}}{100} \right) P_{g}^{\text{MAX,GENE} \\_ \text{END}}
+    & = \left( 1 - \frac{ICR_{g}}{100} \right) P_{g}^{\text{MAX,GENE} \\_ \text{END}}
     & \forall g \in G_{N\\&T}
     & \qquad (1)
 \\
    P_{g}^{\text{MIN}}
-    & = \left( 1 - \frac{IHR_{g}}{100} \right) P_{g}^{\text{MIN,GENE} \\_ \text{END}}
+    & = \left( 1 - \frac{ICR_{g}}{100} \right) P_{g}^{\text{MIN,GENE} \\_ \text{END}}
     & \forall g \in G_{N\\&T}
     & \qquad (2)
 \end{align}

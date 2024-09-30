@@ -47,7 +47,7 @@ def _make_max_energy_dicts(uc_data, uc_dicts, opt_num):
     uc_dicts.max_energy = {}
     uc_dicts.max_energy_para = {}
 
-    _td = uc_data.config["time_particle_size"]
+    _td = uc_data.config["time_series_granularity"]
 
     if "E_MAX_start_time" in _opt:
         _start_time = _opt["E_MAX_start_time"]
@@ -69,7 +69,7 @@ def _make_max_energy_dicts(uc_data, uc_dicts, opt_num):
         _T_N = 24 * 60 / _td * _N
         _time_select = list(range(_start_index, len(uc_dicts.timeline_w_pre_period), int(_T_N)))
 
-        _set_1 = set(uc_dicts.timeline_w_pre_period[_time_select].tolist())
+        _set_1 = set(uc_dicts.timeline_w_pre_period.iloc[_time_select].tolist())
         _set_2 = set(_df_base.index.tolist())
         _index = sorted(list(_set_1 & _set_2))
         _data = _df_base.loc[_index]

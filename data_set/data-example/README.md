@@ -1,13 +1,15 @@
 # 電力系統モデル - テストモデル -
 
+**[Click here for the README in English.](./README_EN.md)**
+
 - データ形式の例示や動作確認を目的に作成。
 - 東京地域の規模を0.1倍程度にした「Area_A」と北海道地域の規模を0.3倍程度にした「Area_B」で構成される。**設定値や結果自体に特別な意味はない事に注意が必要。**
 - 時系列データの期間は2016年4月1日（金）から2017年3月31日（金）の1年間である。
-- 上記一年間を受渡日とした最適化を実施するためのダミーデータとして、2016年3月31日（木）と2017年4月1日（土）のデータを追記している。
-  - demand.csv、demand_M_req.csv、PV_ACT.csv、PV_FCST_U.csv、PV_FCST_M.csv、PV_FCST_L.csv、WF_ACT.csv、WF_FCST_U.csv、WF_FCST_M.csv、WF_FCST_L.csv、others.csvの2016年3月31日（木）には2016年4月1日（金）のデータを、2017年4月1日（土）には2017年3月31日（金）のデータを記載している
-  - demand_R_GF_LFC_UP.csv、demand_R_GF_LFC_DOWN.csv、PV_R_GF_LFC_UP.csv、PV_R_GF_LFC_DOWN.csv、WF_R_GF_LFC_UP.csv、WF_R_GF_LFC_DOWN.csvの2016年3月31日（木）には3月のデータを、2017年4月1日（土）には4月のデータを記載している
-  - tie_calculation_section_day.csvの2016年3月31日（木）には3月後半平日のデータを、2017年4月1日（土）には4月休日のデータを記載している
-  - 各ファイルの書式は[5. 電力系統データCSVファイルの記述方法](../../docs/05_csvfile/)を参照。
+- 上記一年間を受渡日とするためには、検討期間の前後にそれぞれ1日のダミーデータが必要である。ダミーデータとして、2016年3月31日（木）と2017年4月1日（土）のデータを追記している。
+  - demand.csv、demand_M_req.csv、PV_ACT.csv、PV_FCST_U.csv、PV_FCST_M.csv、PV_FCST_L.csv、WF_ACT.csv、WF_FCST_U.csv、WF_FCST_M.csv、WF_FCST_L.csv、others.csvには2016年3月31日（木）として2016年4月1日（金）のデータを、2017年4月1日（土）として2017年3月31日（金）のデータを記載している。
+  - demand_R_GF_LFC_UP.csv、demand_R_GF_LFC_DOWN.csv、PV_R_GF_LFC_UP.csv、PV_R_GF_LFC_DOWN.csv、WF_R_GF_LFC_UP.csv、WF_R_GF_LFC_DOWN.csvには2016年3月31日（木）として3月のデータを、2017年4月1日（土）として4月のデータを記載している。
+  - tie_calculation_section_day.csvには2016年3月31日（木）として3月後半平日のデータを、2017年4月1日（土）として4月休日のデータを記載している。
+  - 各ファイルの書式はreadmeの第5章[「電力系統データCSVファイルの記述方法」](../../README.md#目次)を参照。
 
 ## 発電機データ
 
@@ -112,23 +114,23 @@
 
 - 一率10%で固定。
 
-### 風力発電実出力 - WF_ACT -
+### 風力発電実出力
 
 対象CSVファイル: WF/WF_ACT.csv
 
-### 風力発電出力予測最大値 - WF_FCST_U -
+### 風力発電出力予測最大値
 
 対象CSVファイル: WF/WF_FCST_U.csv
 
-### 風力発電出力予測値 - WF_FCST_M -
+### 風力発電出力予測値
 
 対象CSVファイル: WF/WF_FCST_M.csv
 
-### 風力発電出力予測最小値 - WF_FCST_L -
+### 風力発電出力予測最小値
 
 対象CSVファイル: WF/WF_FCST_L.csv
 
-### 風力発電短周期（GF&LFC成分）変動予測誤差率 - WF_R_GF_LFC_UP, WF_R_GF_LFC_DOWN -
+### 風力発電短周期（GF&LFC成分）変動予測誤差率
 
 対象CSVファイル: WF/WF_R_GF_LFC_UP.csv, WF_R_GF_LFC_DOWN.csv
 
@@ -148,15 +150,15 @@
 - 適当な値が入力されており、値自体に意味は特にない。
 
 
-### 各時期連系線運用容量・マージン算出断面　- tie_calculation_section_day, tie_calculation_section_of_the_clock-
+### 各時期連系線運用容量・マージン算出断面
 
 対象CSVファイル: tie/season/tie_calculation_section_day.csv, tie_calculation_section_of_the_clock.csv,
 
 - 昼時間を「8～22時」、それ以外を夜時間とする
-- month_sectionに入力する季節の区分として、年間を12ヶ月と9月・11月・3月を二分割する、全15時期分割を用いる。<br />月の英語3文字略称（「Jan」「Feb」...）を基本とし、9月、11月、3月は前半と後半を分けるために「\_1st」、「\_2nd」を接尾語として用いる（「Sep_1st」「Sep_2nd」「Nov_1st」「Nov_2nd」「Mar_1st」「Mar_2nd」）。[^1]
+- month_sectionに入力する期間の区分として、年間を12ヶ月とし，9月・11月・3月を二分割する，全15機関への分割を用いる。<br />月の英語3文字略称（「Jan」「Feb」...）を基本とし、9月、11月、3月は前半と後半を分けるために「\_1st」、「\_2nd」を接尾語として用いる（「Sep_1st」「Sep_2nd」「Nov_1st」「Nov_2nd」「Mar_1st」「Mar_2nd」）。[^1]
 
 [^1]: 電力広域的運営推進期間(OCCTO)の資料[「運用容量の算出方法見直しおよび妥当性確認について」](https://www.occto.or.jp/renkeisenriyou/oshirase/2015/files/02_unyouyouryou_sansyutsuhouhou.pdf)8ページ目を参照
-### エネルギー貯蔵システムの蓄電量計画運用 - E_R_plan -
+### エネルギー貯蔵システムの蓄電量計画運用
 
 対象CSVファイル: ESS/E_R_plan.csv
 
@@ -170,12 +172,12 @@
   - 日曜日 0時: 50%
 
 
-### 発電機の***N***日毎の発電量上限制約 - Maximum energy constraints -
+### 発電機の1日毎の発電量上限制約
 
 対象CSVファイル: generation/E_1_day_MAX.csv
 
 - 水力発電機の1日毎の発電量上限値を設定
-### その他の発電設備の出力値 - others -
+### その他の発電設備の出力値
 
 対象CSVファイル: others.csv
 

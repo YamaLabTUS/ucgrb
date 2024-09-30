@@ -47,10 +47,16 @@ def _make_spPr_from_dict(target, props):
                                 for key_sub3, value_sub3 in value_sub2.items():
                                     if key_sub3 == "width":
                                         setattr(
-                                            target.marker.spPr.line, key_sub3, value_sub3 * 12700
+                                            target.marker.spPr.line,
+                                            key_sub3,
+                                            value_sub3 * 12700,
                                         )
                                     else:
-                                        setattr(target.marker.spPr.line, key_sub3, value_sub3)
+                                        setattr(
+                                            target.marker.spPr.line,
+                                            key_sub3,
+                                            value_sub3,
+                                        )
                             else:
                                 setattr(target.marker.spPr, key_sub2, value_sub2)
                     else:

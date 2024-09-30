@@ -12,6 +12,12 @@ Gurobi Optimizerの有償版ライセンスを保有していない場合、制�
 具体的な手順は以下の通りである。
 
 1. 本レジストリをクローンする。
+   - **注意！** クローンする際、ディレクトリ名を「**ucgrb-private**」ではなく、「**ucgrb**」に変更しなくてはいけない。例えば、コマンドでクローンを行う際には、以下のように記載する必要がある。
+
+    ```cmd
+    git clone https://github.com/YamaLabTUS/ucgrb-private.git ucgrb
+    ```
+    参考URL: [https://git-scm.com/book/ja/v2/Git-の基本-Git-リポジトリの取得](https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E5%9F%BA%E6%9C%AC-Git-%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AE%E5%8F%96%E5%BE%97)
 
 2. 本レジストリと同一ディレクトリ内に以下のスクリプト「main.py」と設定ファイル「config.yml」を作成する。
 
@@ -44,18 +50,23 @@ Gurobi Optimizerの有償版ライセンスを保有していない場合、制�
 
    <img src="../img/03/directories_5.png" width="300" alt="Construct of directories">
 
-3. 本レポジトリのルートディレクトリにある、Anaconda環境設定ファイル「env.yml」を読み込んで、仮想環境を構築する。
+3. PowerShell等のコンソールを開いて、本レジストリ内(ucgrb)に移動し、poetryの仮想環境を構築する。
 
-   - 構築方法: [https://www.sandbox-ots.com/2021/12/anaconda-navigatorconda.html](https://www.sandbox-ots.com/2021/12/anaconda-navigatorconda.html)
+  ```cmd
+  cd ucgrb
+  poetry install
+  ```
+
 
 4. 仮想環境上で「main.py」を実行する。主に以下の2つの方法がある。
 
-   - spyderを起動して、「main.py」を開き、実行する。
-
-   - コンソールを開いて、main.pyがある場所にcdコマンドで移動し、以下のコマンドを実行する。
+   - poetryの仮想環境シェルに入って、main.pyがある場所にcdコマンドで移動し、`python main.py`を実行する。
 
      ```cmd
+     poetry shell
+     cd ../
      python main.py
      ```
+  - VScodeやspyderを起動して、インターポレーターをpoetryの仮想環境に指定したのち、「main.py」を開き、実行する。
 
 5. 本レポジトリのルートディレクトリの中にディレクトリ「result」が生成され、その中に、実行情報ファイル「info.txt」と結果ファイル（xlsx、json.zip）が出力される

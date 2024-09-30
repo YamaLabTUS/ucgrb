@@ -37,7 +37,12 @@ def _make_tie_operation_dicts(uc_data, uc_dicts, opt_num):
     for time_key, time in uc_dicts.timeline.items():
         for name, f, t in uc_dicts.tie:
             if uc_data.config["setting_method_of_TTC_and_Margin"] == "fixed":
-                index = ["TTC_forward", "TTC_counter", "Margin_forward", "Margin_counter"]
+                index = [
+                    "TTC_forward",
+                    "TTC_counter",
+                    "Margin_forward",
+                    "Margin_counter",
+                ]
                 if uc_data.config["consider_maximum_reserve_constraint_for_tie"]:
                     index.extend(
                         [

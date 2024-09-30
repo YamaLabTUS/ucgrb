@@ -18,7 +18,7 @@ def _make_descent_dicts(uc_data, uc_dicts):
     if uc_data.config["make_descent_dicts"] is False:
         return
 
-    _td = uc_data.config["time_particle_size"]
+    _td = uc_data.config["time_series_granularity"]
     _target_period = uc_dicts.whole_timeline_w_pre_period
 
     uc_dicts.P_des = collections.defaultdict(int)
@@ -43,10 +43,10 @@ def _make_descent_dicts(uc_data, uc_dicts):
                 _update_P_des(uc_dicts.P_c_des, des_event, _P_c_range, _td, _target_period)
 
 
-def _update_P_des(P_des, des_event, P_range, time_particle_size, target_period):
+def _update_P_des(P_des, des_event, P_range, time_series_granularity, target_period):
     _fmt = "%Y-%m-%dT%H-%M-%S"
 
-    _f = str(time_particle_size) + "min"
+    _f = str(time_series_granularity) + "min"
 
     _des = min(des_event.P_des, P_range)
     _tl_1min = pd.date_range(
@@ -56,7 +56,7 @@ def _update_P_des(P_des, des_event, P_range, time_particle_size, target_period):
     )
     _df_1min = pd.Series(_des * ones(len(_tl_1min)), _tl_1min)
 
-    _df_base = _df_1min.resample(_f, label="right").sum() / time_particle_size
+    _df_base = _df_1min.resample(_f, label="right").sum() / time_series_granularity
     _df = pd.Series(_df_base.values.tolist(), _df_base.index.strftime(_fmt).values.tolist())
     _tl_set = set(target_period.values.tolist()) & set(_df.index.values.tolist())
     _tl = list(_tl_set)

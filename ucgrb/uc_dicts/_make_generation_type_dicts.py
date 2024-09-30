@@ -22,9 +22,13 @@ def _make_generation_type_dicts(uc_data, uc_dicts):
 
     _df = uc_data.power_system.generation_type.set_index(["name"])
     for i in _df.columns:
-        (uc_dicts.generation_type, uc_dicts.generation_type_para[i]) = gp.multidict(_df[i])
-    uc_dicts.n_and_t_generation_type = gp.tuplelist(
-        uc_data.config["nuclear_and_thermal_generation_type"]
+        if i != "kind":
+            (uc_dicts.generation_type, uc_dicts.generation_type_para[i]) = gp.multidict(_df[i])
+
+    uc_dicts.thermal_generation_type = gp.tuplelist(_df["kind"][_df["kind"] == "thermal"].keys())
+    uc_dicts.nucl_generation_type = gp.tuplelist(_df["kind"][_df["kind"] == "nuclear"].keys())
+    uc_dicts.hydro_generation_type = gp.tuplelist(_df["kind"][_df["kind"] == "hydro"].keys())
+
+    uc_dicts.n_and_t_generation_type = (
+        uc_dicts.nucl_generation_type + uc_dicts.thermal_generation_type
     )
-    uc_dicts.nucl_generation_type = gp.tuplelist(uc_data.config["nuclear_generation_type"])
-    uc_dicts.hydro_generation_type = gp.tuplelist(uc_data.config["hydro_generation_type"])

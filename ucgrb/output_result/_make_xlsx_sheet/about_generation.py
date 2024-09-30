@@ -85,20 +85,20 @@ def about_generation(ws, period_name, timeline, time_format, area, m, uc_data, u
 
         _value_col = ["Descent"]
         for time in timeline:
-            if g_type in uc_data.config["nuclear_and_thermal_generation_type"]:
+            if g_type in uc_dicts.n_and_t_generation_type:
                 _value = uc_dicts.P_des[time, name] * uc_dicts.u[time, name, g_type, area].X
-            elif g_type in uc_data.config["hydro_generation_type"]:
+            elif g_type in uc_dicts.hydro_generation_type:
                 _value = uc_dicts.P_des[time, name] * uc_dicts.U[time, name]
             _value_col.append(_value)
         _append_col(ws, _value_col)
 
         _value_col = ["Max Output"]
         for time in timeline:
-            if g_type in uc_data.config["nuclear_and_thermal_generation_type"]:
+            if g_type in uc_dicts.n_and_t_generation_type:
                 _value = (uc_dicts.generation_para["P_MAX"][name, g_type, area]) * uc_dicts.u[
                     time, name, g_type, area
                 ].X
-            elif g_type in uc_data.config["hydro_generation_type"]:
+            elif g_type in uc_dicts.hydro_generation_type:
                 _value = (uc_dicts.generation_para["P_MAX"][name, g_type, area]) * uc_dicts.U[
                     time, name
                 ]
@@ -107,12 +107,12 @@ def about_generation(ws, period_name, timeline, time_format, area, m, uc_data, u
 
         _value_col = ["Min Output"]
         for time in timeline:
-            if g_type in uc_data.config["nuclear_and_thermal_generation_type"]:
+            if g_type in uc_dicts.n_and_t_generation_type:
                 _value = (
                     uc_dicts.generation_para["P_MIN"][name, g_type, area]
                     * uc_dicts.u[time, name, g_type, area].X
                 )
-            elif g_type in uc_data.config["hydro_generation_type"]:
+            elif g_type in uc_dicts.hydro_generation_type:
                 _value = (
                     uc_dicts.generation_para["P_MIN"][name, g_type, area] * uc_dicts.U[time, name]
                 )

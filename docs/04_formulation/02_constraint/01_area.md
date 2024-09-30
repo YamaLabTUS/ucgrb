@@ -214,12 +214,12 @@ $$
 
 | 条件名                                   | デフォルト値 | 設定ファイル上での設定名                | Falseとしたときの必要GF＆LFC調整力の変更内容 |
 | :--------------------------------------- | :----------- | :-------------------------------------- | :------------------------------------------- |
-| 需要起因の必要GF&LFC上向き調整力の有無   | True         | consider_required_gf_lfc_up_by_demand   | 式（1）の右辺を0にする                      |
-| 太陽光起因の必要GF&LFC上向き調整力の有無 | True         | consider_required_gf_lfc_up_by_pv       | 式（2）の右辺を0にする                      |
-| 風力起因の必要GF&LFC上向き調整力の有無   | True         | consider_required_gf_lfc_up_by_wf       | 式（3）の右辺を0にする                      |
-| 需要起因の必要GF&LFC下向き調整力の有無   | False        | consider_required_gf_lfc_down_by_demand | 式（4）の右辺を0にする                      |
-| 太陽光起因の必要GF&LFC下向き調整力の有無 | False        | consider_required_gf_lfc_down_by_pv     | 式（5）の右辺を0にする                      |
-| 風力起因の必要GF&LFC下向き調整力の有無   | False        | consider_required_gf_lfc_down_by_wf     | 式（6）の右辺を0にする                      |
+| 需要起因の必要GF&LFC上向き調整力の有無   | True         | consider_required_gf_lfc_up_by_demand   | 式（1）の右辺を0にする                       |
+| 太陽光起因の必要GF&LFC上向き調整力の有無 | True         | consider_required_gf_lfc_up_by_pv       | 式（2）の右辺を0にする                       |
+| 風力起因の必要GF&LFC上向き調整力の有無   | True         | consider_required_gf_lfc_up_by_wf       | 式（3）の右辺を0にする                       |
+| 需要起因の必要GF&LFC下向き調整力の有無   | False        | consider_required_gf_lfc_down_by_demand | 式（4）の右辺を0にする                       |
+| 太陽光起因の必要GF&LFC下向き調整力の有無 | False        | consider_required_gf_lfc_down_by_pv     | 式（5）の右辺を0にする                       |
+| 風力起因の必要GF&LFC下向き調整力の有無   | False        | consider_required_gf_lfc_down_by_wf     | 式（6）の右辺を0にする                       |
 
 ## 三次調整力制約
 

@@ -7,7 +7,10 @@ Created on Mon Dec 13 19:14:22 2021.
 """
 
 DEFAULT_BAR = {
-    "Others": {"solidFill": "4F6228", "line": {"solidFill": "4F6228", "width": 1.5}},  # 暗い黄緑,
+    "Others": {
+        "solidFill": "4F6228",
+        "line": {"solidFill": "4F6228", "width": 1.5},
+    },  # 暗い黄緑,
     "HYDRO": {
         "pattFill": {
             "preset": "pct75",  # 点線: 75%

@@ -35,6 +35,7 @@ def _add_scheduling_setting(uc_data, day: date, kind: str):
         )
         raise ValueError(_el)
 
+    _td = int(uc_data.config["time_series_granularity"])
     uc_data.config["rolling_opt_list"].append({})
 
     # name
@@ -44,9 +45,14 @@ def _add_scheduling_setting(uc_data, day: date, kind: str):
 
     # start_time
     if kind == "day-ahead":
-        _start_time = datetime.combine(day, time()) - timedelta(days=1) + timedelta(hours=13)
+        _start_time = (
+            datetime.combine(day, time())
+            - timedelta(days=1)
+            + timedelta(hours=12)
+            + timedelta(minutes=_td)
+        )
     elif kind == "intra-day":
-        _start_time = datetime.combine(day, time()) + timedelta(hours=1)
+        _start_time = datetime.combine(day, time()) + timedelta(minutes=_td)
     uc_data.config["rolling_opt_list"][-1]["start_time"] = _start_time
 
     # end_time

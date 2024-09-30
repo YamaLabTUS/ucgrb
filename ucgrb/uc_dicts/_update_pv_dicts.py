@@ -17,7 +17,7 @@ def _update_pv_dicts(uc_data, uc_dicts, opt_num):
         return
 
     _fmt = "%Y-%m-%dT%H-%M-%S"
-    _td = uc_data.config["time_particle_size"]
+    _td = uc_data.config["time_series_granularity"]
     _f = str(_td) + "min"
     _opt = uc_data.config["rolling_opt_list"][opt_num]
 

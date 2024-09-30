@@ -17,7 +17,7 @@ def _make_timeline_dicts(uc_data, uc_dicts, opt_num):
 
     _fmt = "%Y-%m-%dT%H-%M-%S"
     _opt = uc_data.config["rolling_opt_list"][opt_num]
-    _td = uc_data.config["time_particle_size"]
+    _td = uc_data.config["time_series_granularity"]
 
     # "timeline"の作成
     _s = _opt["start_time"]

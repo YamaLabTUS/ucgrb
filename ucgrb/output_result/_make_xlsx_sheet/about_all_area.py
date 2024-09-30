@@ -39,6 +39,8 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
     _append_col(ws, _header_col)
     _start_col = ws.max_column
 
+    tsg_ratio = int(uc_data.config["time_series_granularity"]) / 60
+
     _value_col = ["Others"]
     for time in timeline:
         _value = uc_dicts.others_para["value"].sum(time, "*").getValue()
@@ -66,27 +68,23 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
 
     _value_col = ["WF"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                - uc_dicts.p_wf_suppr[time, area]
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area]
+            for area in uc_dicts.area
+        ).getValue()
+
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["PV"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                - uc_dicts.p_pv_suppr[time, area]
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            - uc_dicts.p_pv_suppr[time, area]
+            for area in uc_dicts.area
+        ).getValue()
+
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -149,6 +147,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
             _value = gp.quicksum(
                 uc_dicts.p[time, name, g_type, area].X
                 * uc_dicts.generation_para["C_coef"][name, g_type, area]
+                * tsg_ratio
                 for name, g_type, area in uc_dicts.n_and_t_generation.select("*", g_type, "*")
             ).getValue()
             _value_col.append(_value)
@@ -163,6 +162,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
             _value = gp.quicksum(
                 uc_dicts.u[time, name, g_type, area].X
                 * uc_dicts.generation_para["C_intc"][name, g_type, area]
+                * tsg_ratio
                 for name, g_type, area in uc_dicts.n_and_t_generation.select("*", g_type, "*")
             ).getValue()
             _value_col.append(_value)
@@ -189,7 +189,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
     _sum = 0
     for time in timeline:
         _value = gp.quicksum(
-            uc_dicts.p_short[time, area].X * uc_dicts.area_para["C_short"][area]
+            uc_dicts.p_short[time, area].X * uc_dicts.area_para["C_short"][area] * tsg_ratio
             for area in uc_dicts.area
         ).getValue()
         _value_col.append(_value)
@@ -202,7 +202,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
     _sum = 0
     for time in timeline:
         _value = gp.quicksum(
-            uc_dicts.p_surplus[time, area].X * uc_dicts.area_para["C_surplus"][area]
+            uc_dicts.p_surplus[time, area].X * uc_dicts.area_para["C_surplus"][area] * tsg_ratio
             for area in uc_dicts.area
         ).getValue()
         _value_col.append(_value)
@@ -215,7 +215,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
     _sum = 0
     for time in timeline:
         _value = gp.quicksum(
-            uc_dicts.p_pv_suppr[time, area].X * uc_dicts.area_para["C_PV_suppr"][area]
+            uc_dicts.p_pv_suppr[time, area].X * uc_dicts.area_para["C_PV_suppr"][area] * tsg_ratio
             for area in uc_dicts.area
         ).getValue()
         _value_col.append(_value)
@@ -228,7 +228,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
     _sum = 0
     for time in timeline:
         _value = gp.quicksum(
-            uc_dicts.p_wf_suppr[time, area].X * uc_dicts.area_para["C_WF_suppr"][area]
+            uc_dicts.p_wf_suppr[time, area].X * uc_dicts.area_para["C_WF_suppr"][area] * tsg_ratio
             for area in uc_dicts.area
         ).getValue()
         _value_col.append(_value)
@@ -241,7 +241,9 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
     _sum = 0
     for time in timeline:
         _value = gp.quicksum(
-            uc_dicts.p_tert_up_short[time, area].X * uc_dicts.area_para["C_Tert_short"][area]
+            uc_dicts.p_tert_up_short[time, area].X
+            * uc_dicts.area_para["C_Tert_short"][area]
+            * tsg_ratio
             for area in uc_dicts.area
         ).getValue()
         _value_col.append(_value)
@@ -254,7 +256,9 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
     _sum = 0
     for time in timeline:
         _value = gp.quicksum(
-            uc_dicts.p_tert_down_short[time, area].X * uc_dicts.area_para["C_Tert_short"][area]
+            uc_dicts.p_tert_down_short[time, area].X
+            * uc_dicts.area_para["C_Tert_short"][area]
+            * tsg_ratio
             for area in uc_dicts.area
         ).getValue()
         _value_col.append(_value)
@@ -267,7 +271,9 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
     _sum = 0
     for time in timeline:
         _value = gp.quicksum(
-            uc_dicts.e_ess_short[time, ess, area].X * uc_dicts.ess_para["C_ess_short"][ess, area]
+            uc_dicts.e_ess_short[time, ess, area].X
+            * uc_dicts.ess_para["C_ess_short"][ess, area]
+            * tsg_ratio
             for ess, area in uc_dicts.ess
         ).getValue()
         _value_col.append(_value)
@@ -282,6 +288,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
         _value = gp.quicksum(
             uc_dicts.e_ess_surplus[time, ess, area].X
             * uc_dicts.ess_para["C_ess_surplus"][ess, area]
+            * tsg_ratio
             for ess, area in uc_dicts.ess
         ).getValue()
         _value_col.append(_value)
@@ -297,6 +304,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
         _value = gp.quicksum(
             uc_dicts.tie_para["C_tie_penalty"][name, f, t]
             * (uc_dicts.p_tie_f[time, name, f, t].X + uc_dicts.p_tie_c[time, name, f, t].X)
+            * tsg_ratio
             for name, f, t in uc_dicts.tie
         ).getValue()
         _value_col.append(_value)
@@ -314,6 +322,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
                 uc_dicts.p_tie_gf_lfc_up_f[time, name, f, t].X
                 + uc_dicts.p_tie_gf_lfc_up_c[time, name, f, t].X
             )
+            * tsg_ratio
             for name, f, t in uc_dicts.tie
         ).getValue()
         _value_col.append(_value)
@@ -331,6 +340,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
                 uc_dicts.p_tie_gf_lfc_down_f[time, name, f, t].X
                 + uc_dicts.p_tie_gf_lfc_down_c[time, name, f, t].X
             )
+            * tsg_ratio
             for name, f, t in uc_dicts.tie
         ).getValue()
         _value_col.append(_value)
@@ -348,6 +358,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
                 uc_dicts.p_tie_tert_up_f[time, name, f, t].X
                 + uc_dicts.p_tie_tert_up_c[time, name, f, t].X
             )
+            * tsg_ratio
             for name, f, t in uc_dicts.tie
         ).getValue()
         _value_col.append(_value)
@@ -365,6 +376,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
                 uc_dicts.p_tie_tert_down_f[time, name, f, t].X
                 + uc_dicts.p_tie_tert_down_c[time, name, f, t].X
             )
+            * tsg_ratio
             for name, f, t in uc_dicts.tie
         ).getValue()
         _value_col.append(_value)
@@ -419,6 +431,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
             _value = gp.quicksum(
                 uc_dicts.p[time, name, g_type, area].X
                 * uc_dicts.generation_para["C_coef_CO2"][name, g_type, area]
+                * tsg_ratio
                 for name, g_type, area in uc_dicts.generation.select("*", g_type, "*")
             ).getValue()
             _value_col.append(_value)
@@ -433,6 +446,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
             _value = gp.quicksum(
                 uc_dicts.u[time, name, g_type, area].X
                 * uc_dicts.generation_para["C_intc_CO2"][name, g_type, area]
+                * tsg_ratio
                 for name, g_type, area in uc_dicts.n_and_t_generation.select("*", g_type, "*")
             ).getValue()
             _value_col.append(_value)
@@ -484,16 +498,13 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
 
     _value_col = ["_TRANSPARENT"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                - uc_dicts.p_pv_suppr[time, area].X
-                - uc_dicts.p_pv_tert_down[time, area].X
-                - uc_dicts.p_pv_gf_lfc_down[time, area].X
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            - uc_dicts.p_pv_suppr[time, area].X
+            - uc_dicts.p_pv_tert_down[time, area].X
+            - uc_dicts.p_pv_gf_lfc_down[time, area].X
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -523,56 +534,44 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
 
     _value_col = ["PV Net"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                - uc_dicts.p_pv_suppr[time, area].X
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            - uc_dicts.p_pv_suppr[time, area].X
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["PV Output"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Reserve limit (Up)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                - uc_dicts.p_pv_suppr[time, area].X
-                * (1 - uc_dicts.area_para["R_PV_res_UP"][area] / 100)
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+            - uc_dicts.p_pv_suppr[time, area].X
+            * (1 - uc_dicts.area_para["R_PV_res_UP"][area] / 100)
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Reserve limit (Down)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                (
-                    uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
-                    - uc_dicts.p_pv_suppr[time, area].X
-                )
-                * (1 - uc_dicts.area_para["R_PV_res_DOWN"][area] / 100)
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            (
+                uc_dicts.area_para["PV_cap"][area] * uc_dicts.pv_para["output"][time, area]
+                - uc_dicts.p_pv_suppr[time, area].X
+            )
+            * (1 - uc_dicts.area_para["R_PV_res_DOWN"][area] / 100)
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -599,16 +598,13 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
 
     _value_col = ["_TRANSPARENT"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                - uc_dicts.p_wf_suppr[time, area].X
-                - uc_dicts.p_wf_tert_down[time, area].X
-                - uc_dicts.p_wf_gf_lfc_down[time, area].X
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+            - uc_dicts.p_wf_tert_down[time, area].X
+            - uc_dicts.p_wf_gf_lfc_down[time, area].X
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -638,56 +634,44 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
 
     _value_col = ["WF Net"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                - uc_dicts.p_wf_suppr[time, area].X
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["WF Output"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Reserve limit (Up)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                - uc_dicts.p_wf_suppr[time, area].X
-                * (1 - uc_dicts.area_para["R_WF_res_UP"][area] / 100)
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+            * (1 - uc_dicts.area_para["R_WF_res_UP"][area] / 100)
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["Reserve limit (Down)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = gp.quicksum(
-                (
-                    uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
-                    - uc_dicts.p_wf_suppr[time, area].X
-                )
-                * (1 - uc_dicts.area_para["R_WF_res_DOWN"][area] / 100)
-                for area in uc_dicts.area
-            ).getValue()
-        else:
-            _value = 0
+        _value = gp.quicksum(
+            (
+                uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+                - uc_dicts.p_wf_suppr[time, area].X
+            )
+            * (1 - uc_dicts.area_para["R_WF_res_DOWN"][area] / 100)
+            for area in uc_dicts.area
+        ).getValue()
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
@@ -762,7 +746,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
 
     _value_col = ["Energy Plan"]
     for time in timeline:
-        if uc_data.config["set_e_ess_bc_constrs"] and time == uc_dicts.timeline[-1]:
+        if uc_data.config["set_e_ess_balance_constrs"] and time == uc_dicts.timeline.iloc[-1]:
             _value = gp.quicksum(
                 uc_dicts.ess_para["E_CAP"][name, area]
                 * uc_dicts.ess_para["E_R_base"][name, area]
@@ -770,7 +754,7 @@ def about_all_area(ws, period_name, timeline, time_format, m, uc_data, uc_dicts)
                 for name, area in uc_dicts.ess
             ).getValue()
         elif (
-            uc_data.config["set_e_ess_plan_constrs"]
+            uc_data.config["set_e_ess_schedule_constrs"]
             and time in uc_dicts.whole_timeline_ess_plan.values
         ):
             _value = gp.quicksum(

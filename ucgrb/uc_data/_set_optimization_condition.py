@@ -12,8 +12,23 @@ def _set_optimization_condition(uc_data):
     """最適化条件に関する設定値が指定されていない場合、初期値を入力する."""
     if "csv_data_dir" not in uc_data.config:
         uc_data.config["csv_data_dir"] = "data"
-    if "time_particle_size" not in uc_data.config:
-        uc_data.config["time_particle_size"] = 60
+    if "time_series_granularity" not in uc_data.config:
+        uc_data.config["time_series_granularity"] = 60
+    if "time_series_to_be_linearly_interpolated" not in uc_data.config:
+        uc_data.config["time_series_to_be_linearly_interpolated"] = [
+            "demand",
+            "PV_ACT",
+            "PV_FCST_L",
+            "PV_FCST_M",
+            "PV_FCST_U",
+            "WF_ACT",
+            "WF_FCST_L",
+            "WF_FCST_M",
+            "WF_FCST_U",
+            "others",
+        ]
+    if "time_series_not_to_be_interpolated" not in uc_data.config:
+        uc_data.config["time_series_not_to_be_interpolated"] = ["E_R_plan"]
     if "areas" not in uc_data.config:
         uc_data.config["areas"] = "ALL"
     if "nuclear_and_thermal_generation_type" not in uc_data.config:

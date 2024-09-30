@@ -18,7 +18,7 @@ def _make_planned_outage_dicts(uc_data, uc_dicts):
         return
 
     _fmt = "%Y-%m-%dT%H-%M-%S"
-    _td = uc_data.config["time_particle_size"]
+    _td = uc_data.config["time_series_granularity"]
     _f = str(_td) + "min"
     _target_period = uc_dicts.whole_timeline_w_pre_period
 

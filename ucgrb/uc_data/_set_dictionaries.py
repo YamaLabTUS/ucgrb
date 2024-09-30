@@ -64,3 +64,8 @@ def _set_dictionaries(uc_data):
         uc_data.config["calculate_C_intc_CO2"] = True
     if "calculate_C_startup_CO2" not in uc_data.config:
         uc_data.config["calculate_C_startup_CO2"] = True
+
+    if "calculate_Min_Down_Time" not in uc_data.config:
+        uc_data.config["calculate_Min_Down_Time"] = True
+    if "calculate_Min_Up_Time" not in uc_data.config:
+        uc_data.config["calculate_Min_Up_Time"] = True

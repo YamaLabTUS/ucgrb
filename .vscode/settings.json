@@ -1,0 +1,21 @@
+{
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "explicit"
+	},
+	"python.languageServer": "Pylance",
+	"python.testing.unittestEnabled": true,
+	"python.testing.pytestEnabled": false,
+	"python.terminal.activateEnvInCurrentTerminal": true,
+	"terminal.integrated.env.osx": {
+		"PYTHONPATH": "${workspaceFolder}"
+	},
+	"terminal.integrated.env.windows": {
+		"PYTHONPATH": "${workspaceFolder}"
+	},
+	"terminal.integrated.env.linux": {
+		"PYTHONPATH": "${workspaceFolder}"
+	},
+	"black-formatter.importStrategy": "fromEnvironment",
+	"isort.importStrategy": "fromEnvironment",
+}

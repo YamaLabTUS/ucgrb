@@ -25,7 +25,7 @@ end_date: "2016-04-03"
 
 2016年4月1日の前日計画、当日計画、2016年4月2日の前日計画、当日計画、2016年4月3日の前日計画、当日計画、2016年4月4日の前日計画、全部で7回の最適化が実施される。
 
-## 例3: 対象期間が月単位で指定する場合
+## 例3: 対象期間を月単位で指定する場合
 
 対象期間（受渡日）: 2016年4月（2016年4月1日から2016年4月30日まで）
 
@@ -46,7 +46,9 @@ end_month: "2016-07"
 
 ## 例5: 最適化リストの直接記述
 
-例1と同一の最適化を実施する場合。
+ローリング最適化の実施リストを設定ファイルに直接記載し、実施することができる。
+記載方法の詳細は「6. 設定値一覧」の[「iv. ローリング最適化リスト設定」](../06_config/04_rolling_optimization_list.md)で説明されている。
+下記に例1と同一の最適化を実施する場合の記述を示す。
 
 ```yaml
 config_name: "Example 5"
@@ -87,7 +89,7 @@ rolling_opt_list:
 
 ## 例6: 最適化対象地域の選択
 
-対象地域: "Area_A"のみ
+対象地域: "Area\_A"のみ
 
 ```yaml
 config_name: "Example 6"
@@ -96,25 +98,25 @@ areas:
   - "Area_A"
 ```
 
-## 例7: ESSの蓄電池運用設定その1
+## 例7: ESSの蓄電量運用設定その1
 
 計画運用制約に変更（デフォルトは境界条件制約）
 
 ```yaml
 config_name: "Example 7"
 start_date: "2016-04-01"
-set_e_ess_plan_constrs: True
+set_e_ess_schedule_constrs: True
 ```
 
-## 例8: ESSの蓄電池運用設定その2
+## 例8: ESSの蓄電量運用設定その2
 
-境界条件制約を考慮した後、計画運用制約で上書きする。
+境界条件制約: 開始時間・終了時間の蓄電量一致条件制約を考慮した後、計画運用制約: 特定時間の蓄電量指定制約で上書きする。
 
 ```yaml
 config_name: "Example 8"
 start_date: "2016-04-01"
-set_e_ess_plan_constrs: True
-set_e_ess_bc_constrs: True
+set_e_ess_schedule_constrs: True
+set_e_ess_balance_constrs: True
 ```
 
 ## 例9: 原子力発電機のマストラン運転制約の解除
@@ -136,10 +138,18 @@ export_xlsx_file:
   ESS: True
 ```
 
-## 例11: MPSファイルの出力
+## 例12: 時間粒度を30分に変更
 
 ```yaml
-config_name: "Example 11"
+config_name: "Example 12"
 start_date: "2016-04-01"
-export_mps_file: True
+time_series_granularity: 30
+```
+
+## 例13: 時間粒度を2時間（120分）に変更
+
+```yaml
+config_name: "Example 13"
+start_date: "2016-04-01"
+time_series_granularity: 120
 ```

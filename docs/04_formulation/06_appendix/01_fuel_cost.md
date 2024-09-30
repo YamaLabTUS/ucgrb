@@ -21,7 +21,7 @@
 $$
 \begin{align}
    C_{g}^{\text{coef}}
-    & = \frac{C_{g}^{\text{fuel}}}{\left( 1 - \frac{IHR_{g}}{100}\right)}
+    & = \frac{C_{g}^{\text{fuel}}}{\left( 1 - \frac{ICR_{g}}{100}\right)}
     & \forall g \in G_{N\\&T}
 \end{align}
 $$
@@ -31,7 +31,7 @@ $$
       C_{g}^{{\text{fuel}}}
        & : 原子力・火力発電機 g の燃料費比例係数 [千円/\text{MWh}]
       \\
-      IHR_{g}
+      ICR_{g}
        & : 原子力・火力発電機 g の所内率[\\%]
 \end{array}
 $$
