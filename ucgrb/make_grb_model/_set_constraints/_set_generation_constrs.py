@@ -9,7 +9,8 @@ import datetime as dt
 
 
 def _set_generation_constrs(m, uc_data, uc_dicts):
-    _td = dt.timedelta(minutes=uc_data.config["time_particle_size"])
+    _td = dt.timedelta(minutes=uc_data.config["time_series_granularity"])
+    tsg_ratio = int(uc_data.config["time_series_granularity"]) / 60
 
     if uc_data.config["set_p_max_constrs"]:
         uc_dicts.constrs_p_max_n_and_t = m.addConstrs(
@@ -17,7 +18,7 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
                 uc_dicts.p[time, name, g_type, area]
                 + uc_dicts.p_gf_lfc_up[time, name, g_type, area]
                 + uc_dicts.p_tert_up[time, name, g_type, area]
-                == (
+                <= (
                     uc_dicts.generation_para["P_MAX"][name, g_type, area]
                     - uc_dicts.P_des[time, name]
                 )
@@ -32,7 +33,7 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
                 uc_dicts.p[time, name, g_type, area]
                 + uc_dicts.p_gf_lfc_up[time, name, g_type, area]
                 + uc_dicts.p_tert_up[time, name, g_type, area]
-                == (
+                <= (
                     uc_dicts.generation_para["P_MAX"][name, g_type, area]
                     - uc_dicts.P_des[time, name]
                 )
@@ -49,7 +50,7 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
                 uc_dicts.p[time, name, g_type, area]
                 - uc_dicts.p_gf_lfc_down[time, name, g_type, area]
                 - uc_dicts.p_tert_down[time, name, g_type, area]
-                == uc_dicts.generation_para["P_MIN"][name, g_type, area]
+                >= uc_dicts.generation_para["P_MIN"][name, g_type, area]
                 * uc_dicts.u[time, name, g_type, area]
                 for time in uc_dicts.timeline
                 for name, g_type, area in uc_dicts.n_and_t_generation
@@ -61,7 +62,7 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
                 uc_dicts.p[time, name, g_type, area]
                 - uc_dicts.p_gf_lfc_down[time, name, g_type, area]
                 - uc_dicts.p_tert_down[time, name, g_type, area]
-                == uc_dicts.generation_para["P_MIN"][name, g_type, area] * uc_dicts.U[time, name]
+                >= uc_dicts.generation_para["P_MIN"][name, g_type, area] * uc_dicts.U[time, name]
                 for time in uc_dicts.timeline
                 for name, g_type, area in uc_dicts.hydro_generation
             ),
@@ -94,7 +95,7 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
 
     if uc_data.config["set_e_max_constrs"] & hasattr(uc_dicts, "max_energy"):
         for _N in uc_dicts.max_energy.keys():
-            _T_N = 24 * 60 / uc_data.config["time_particle_size"] * _N
+            _T_N = int(_N * 24 / tsg_ratio)
             _const = m.addConstrs(
                 (
                     uc_dicts.p.sum(
@@ -107,6 +108,7 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
                         "*",
                         "*",
                     )
+                    * tsg_ratio
                     <= uc_dicts.max_energy_para[_N]["value"][time, name]
                     for time, name in uc_dicts.max_energy[_N]
                 ),
@@ -141,15 +143,15 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
             "start_up_and_shout_down_2",
         )
 
-    if uc_data.config["set_req_run_time_constrs"]:
-        uc_dicts.constrs_req_run_time = m.addConstrs(
+    if uc_data.config["set_min_up_time_constrs"]:
+        uc_dicts.constrs_min_up_time = m.addConstrs(
             (
                 uc_dicts.su.sum(
                     uc_dicts.timeline_w_pre_period[
                         (
                             dt.datetime.strptime(time, "%Y-%m-%dT%H-%M-%S")
                             - _td
-                            * (uc_dicts.generation_para["Req_Run_Time"][name, g_type, area] - 1)
+                            * (uc_dicts.generation_para["Min_Up_Time"][name, g_type, area] - 1)
                         ) : dt.datetime.strptime(time, "%Y-%m-%dT%H-%M-%S")
                     ],
                     name,
@@ -163,15 +165,15 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
             "required_run_time",
         )
 
-    if uc_data.config["set_req_stop_time_constrs"]:
-        uc_dicts.constrs_req_stop_time = m.addConstrs(
+    if uc_data.config["set_min_down_time_constrs"]:
+        uc_dicts.constrs_min_down_time = m.addConstrs(
             (
                 uc_dicts.sd.sum(
                     uc_dicts.timeline_w_pre_period[
                         (
                             dt.datetime.strptime(time, "%Y-%m-%dT%H-%M-%S")
                             - _td
-                            * (uc_dicts.generation_para["Req_Stop_Time"][name, g_type, area] - 1)
+                            * (uc_dicts.generation_para["Min_Down_Time"][name, g_type, area] - 1)
                         ) : dt.datetime.strptime(time, "%Y-%m-%dT%H-%M-%S")
                     ],
                     name,
@@ -183,6 +185,89 @@ def _set_generation_constrs(m, uc_data, uc_dicts):
                 for name, g_type, area in uc_dicts.n_and_t_generation
             ),
             "required_stop_time",
+        )
+
+    if uc_data.config["set_ramp_constrs"]:
+        uc_dicts.constrs_ramp_up = m.addConstrs(
+            (
+                uc_dicts.p[time, name, g_type, area]
+                + uc_dicts.p_tert_up[time, name, g_type, area]
+                - (uc_dicts.generation_para["P_MAX"][name, g_type, area])
+                * (1 - uc_dicts.u[time, name, g_type, area])
+                <= uc_dicts.p[
+                    uc_dicts.timeline_w_pre_period[
+                        dt.datetime.strptime(time, "%Y-%m-%dT%H-%M-%S") - _td
+                    ],
+                    name,
+                    g_type,
+                    area,
+                ]
+                + (uc_dicts.generation_para["P_MAX"][name, g_type, area])
+                * 60.0
+                * tsg_ratio
+                * (uc_dicts.generation_para["R_RAMP_MAX"][name, g_type, area])
+                / 100
+                + (uc_dicts.generation_para["P_MAX"][name, g_type, area])
+                * (
+                    1
+                    - uc_dicts.u[
+                        uc_dicts.timeline_w_pre_period[
+                            dt.datetime.strptime(time, "%Y-%m-%dT%H-%M-%S") - _td
+                        ],
+                        name,
+                        g_type,
+                        area,
+                    ]
+                )
+                for time in uc_dicts.timeline
+                for name, g_type, area in uc_dicts.n_and_t_generation
+            ),
+            "ramp_up",
+        )
+
+        uc_dicts.constrs_ramp_down = m.addConstrs(
+            (
+                uc_dicts.p[time, name, g_type, area]
+                - uc_dicts.p_tert_down[time, name, g_type, area]
+                + (uc_dicts.generation_para["P_MAX"][name, g_type, area])
+                * (
+                    1
+                    - uc_dicts.u[
+                        time,
+                        name,
+                        g_type,
+                        area,
+                    ]
+                )
+                >= uc_dicts.p[
+                    uc_dicts.timeline_w_pre_period[
+                        dt.datetime.strptime(time, "%Y-%m-%dT%H-%M-%S") - _td
+                    ],
+                    name,
+                    g_type,
+                    area,
+                ]
+                - (uc_dicts.generation_para["P_MAX"][name, g_type, area])
+                * 60.0
+                * tsg_ratio
+                * (uc_dicts.generation_para["R_RAMP_MAX"][name, g_type, area])
+                / 100
+                - (uc_dicts.generation_para["P_MAX"][name, g_type, area])
+                * (
+                    1
+                    - uc_dicts.u[
+                        uc_dicts.timeline_w_pre_period[
+                            dt.datetime.strptime(time, "%Y-%m-%dT%H-%M-%S") - _td
+                        ],
+                        name,
+                        g_type,
+                        area,
+                    ]
+                )
+                for time in uc_dicts.timeline
+                for name, g_type, area in uc_dicts.n_and_t_generation
+            ),
+            "ramp_down",
         )
 
     if uc_data.config["set_planned_outage_constrs"]:

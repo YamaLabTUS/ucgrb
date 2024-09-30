@@ -38,12 +38,7 @@ def about_shadow_price(ws, period_name, timeline, time_format, m, uc_data, uc_di
     for area in uc_dicts.area:
         _value_col = [area]
         for time in timeline:
-            if time in uc_dicts.timeline:
-                _value = m.getConstrByName(
-                    uc_dicts.constrs_power_balance[time, area].ConstrName
-                ).Pi
-            else:
-                _value = 0
+            _value = m.getConstrByName(uc_dicts.constrs_power_balance[time, area].ConstrName).Pi
             _value_col.append(_value)
         _append_col(ws, _value_col)
 
@@ -70,19 +65,12 @@ def about_shadow_price(ws, period_name, timeline, time_format, m, uc_data, uc_di
     for area in uc_dicts.area:
         _value_col = [area]
         for time in timeline:
-            if time in uc_dicts.timeline:
-                __value_d = m.getConstrByName(
-                    uc_dicts.constrs_gf_lfc_up_demand[time, area].ConstrName
-                ).Pi
-                __value_p = m.getConstrByName(
-                    uc_dicts.constrs_gf_lfc_up_pv[time, area].ConstrName
-                ).Pi
-                __value_w = m.getConstrByName(
-                    uc_dicts.constrs_gf_lfc_up_wf[time, area].ConstrName
-                ).Pi
-                _value = max([__value_d, __value_p, __value_w])
-            else:
-                _value = 0
+            __value_d = m.getConstrByName(
+                uc_dicts.constrs_gf_lfc_up_demand[time, area].ConstrName
+            ).Pi
+            __value_p = m.getConstrByName(uc_dicts.constrs_gf_lfc_up_pv[time, area].ConstrName).Pi
+            __value_w = m.getConstrByName(uc_dicts.constrs_gf_lfc_up_wf[time, area].ConstrName).Pi
+            _value = max([__value_d, __value_p, __value_w])
             _value_col.append(_value)
         _append_col(ws, _value_col)
 
@@ -110,19 +98,16 @@ def about_shadow_price(ws, period_name, timeline, time_format, m, uc_data, uc_di
     for area in uc_dicts.area:
         _value_col = [area]
         for time in timeline:
-            if time in uc_dicts.timeline:
-                _value_d = m.getConstrByName(
-                    uc_dicts.constrs_gf_lfc_down_demand[time, area].ConstrName
-                ).Pi
-                _value_p = m.getConstrByName(
-                    uc_dicts.constrs_gf_lfc_down_pv[time, area].ConstrName
-                ).Pi
-                _value_w = m.getConstrByName(
-                    uc_dicts.constrs_gf_lfc_down_wf[time, area].ConstrName
-                ).Pi
-                _value = max([_value_d, _value_p, _value_w])
-            else:
-                _value = 0
+            _value_d = m.getConstrByName(
+                uc_dicts.constrs_gf_lfc_down_demand[time, area].ConstrName
+            ).Pi
+            _value_p = m.getConstrByName(
+                uc_dicts.constrs_gf_lfc_down_pv[time, area].ConstrName
+            ).Pi
+            _value_w = m.getConstrByName(
+                uc_dicts.constrs_gf_lfc_down_wf[time, area].ConstrName
+            ).Pi
+            _value = max([_value_d, _value_p, _value_w])
             _value_col.append(_value)
         _append_col(ws, _value_col)
 
@@ -150,19 +135,10 @@ def about_shadow_price(ws, period_name, timeline, time_format, m, uc_data, uc_di
     for area in uc_dicts.area:
         _value_col = [area]
         for time in timeline:
-            if time in uc_dicts.timeline:
-                _value_p = m.getConstrByName(
-                    uc_dicts.constrs_tert_up_pv[time, area].ConstrName
-                ).Pi
-                _value_w = m.getConstrByName(
-                    uc_dicts.constrs_tert_up_wf[time, area].ConstrName
-                ).Pi
-                _value_z = m.getConstrByName(
-                    uc_dicts.constrs_tert_up_zero[time, area].ConstrName
-                ).Pi
-                _value = max([_value_p, _value_w, _value_z])
-            else:
-                _value = 0
+            _value_p = m.getConstrByName(uc_dicts.constrs_tert_up_pv[time, area].ConstrName).Pi
+            _value_w = m.getConstrByName(uc_dicts.constrs_tert_up_wf[time, area].ConstrName).Pi
+            _value_z = m.getConstrByName(uc_dicts.constrs_tert_up_zero[time, area].ConstrName).Pi
+            _value = max([_value_p, _value_w, _value_z])
             _value_col.append(_value)
         _append_col(ws, _value_col)
 
@@ -190,16 +166,9 @@ def about_shadow_price(ws, period_name, timeline, time_format, m, uc_data, uc_di
     for area in uc_dicts.area:
         _value_col = [area]
         for time in timeline:
-            if time in uc_dicts.timeline:
-                _value_p = m.getConstrByName(
-                    uc_dicts.constrs_tert_down_pv[time, area].ConstrName
-                ).Pi
-                _value_w = m.getConstrByName(
-                    uc_dicts.constrs_tert_down_wf[time, area].ConstrName
-                ).Pi
-                _value = max([_value_p, _value_w])
-            else:
-                _value = 0
+            _value_p = m.getConstrByName(uc_dicts.constrs_tert_down_pv[time, area].ConstrName).Pi
+            _value_w = m.getConstrByName(uc_dicts.constrs_tert_down_wf[time, area].ConstrName).Pi
+            _value = max([_value_p, _value_w])
             _value_col.append(_value)
         _append_col(ws, _value_col)
 
@@ -227,10 +196,7 @@ def about_shadow_price(ws, period_name, timeline, time_format, m, uc_data, uc_di
     for area in uc_dicts.area:
         _value_col = [area]
         for time in timeline:
-            if time in uc_dicts.timeline:
-                _value = m.getConstrByName(uc_dicts.constrs_inertia[time, area].ConstrName).Pi
-            else:
-                _value = 0
+            _value = m.getConstrByName(uc_dicts.constrs_inertia[time, area].ConstrName).Pi
             _value_col.append(_value)
         _append_col(ws, _value_col)
 

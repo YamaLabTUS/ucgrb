@@ -37,7 +37,7 @@ def _make_maintenance_dicts(uc_data, uc_dicts):
 
     _years = set(uc_dicts.whole_timeline_w_pre_period.keys().year)
     _pattern_value = r"^(\d{2})(\d{2})-(\d{2})(\d{2})$"
-    _td = uc_data.config["time_particle_size"]
+    _td = uc_data.config["time_series_granularity"]
 
     uc_data.power_system.planned_outage = pd.DataFrame()
 
@@ -53,19 +53,28 @@ def _make_maintenance_dicts(uc_data, uc_dicts):
                     _start = str(_year) + "-" + _m.group(1) + "-" + _m.group(2)
                     _end = str(_year + 1) + "-" + _m.group(3) + "-" + _m.group(4)
                     _plan = _make_maintenance_plan(name, _start, _end, _td)
-                    _df_new = uc_data.power_system.planned_outage.append(_plan, ignore_index=True)
+                    _df_add = pd.DataFrame(_plan, index=[0])
+                    _df_new = pd.concat(
+                        [uc_data.power_system.planned_outage, _df_add], ignore_index=True
+                    )
                     uc_data.power_system.planned_outage = _df_new
                     # 対象年終わり
                     _start = str(_year - 1) + "-" + _m.group(1) + "-" + _m.group(2)
                     _end = str(_year) + "-" + _m.group(3) + "-" + _m.group(4)
                     _plan = _make_maintenance_plan(name, _start, _end, _td)
-                    _df_new = uc_data.power_system.planned_outage.append(_plan, ignore_index=True)
+                    _df_add = pd.DataFrame(_plan, index=[0])
+                    _df_new = pd.concat(
+                        [uc_data.power_system.planned_outage, _df_add], ignore_index=True
+                    )
                     uc_data.power_system.planned_outage = _df_new
                 else:
                     _start = str(_year) + "-" + _m.group(1) + "-" + _m.group(2)
                     _end = str(_year) + "-" + _m.group(3) + "-" + _m.group(4)
                     _plan = _make_maintenance_plan(name, _start, _end, _td)
-                    _df_new = uc_data.power_system.planned_outage.append(_plan, ignore_index=True)
+                    _df_add = pd.DataFrame(_plan, index=[0])
+                    _df_new = pd.concat(
+                        [uc_data.power_system.planned_outage, _df_add], ignore_index=True
+                    )
                     uc_data.power_system.planned_outage = _df_new
 
 
@@ -73,7 +82,7 @@ def _make_maintenance_plan(
     name: str,
     start: str,
     end: str,
-    time_particle_size: int,
+    time_series_granularity: int,
 ) -> dict:
     """
     最適化対象期間内にある補修期間を、計画停止のデータ形式に変更する.
@@ -84,7 +93,7 @@ def _make_maintenance_plan(
         補修開始日(yyyy-mm-dd)
     end : str
         補修終了日(yyyy-mm-dd)
-    time_particle_size : int
+    time_series_granularity : int
         時間粒度。単位は分。
 
     Returns
@@ -95,7 +104,7 @@ def _make_maintenance_plan(
     """
     _fmt = "%Y/%m/%d %H:%M"
 
-    _start_dt = datetime.strptime(start, "%Y-%m-%d") + timedelta(minutes=time_particle_size)
+    _start_dt = datetime.strptime(start, "%Y-%m-%d") + timedelta(minutes=time_series_granularity)
     _start = _start_dt.strftime(_fmt)
     _end_dt = datetime.strptime(end, "%Y-%m-%d") + timedelta(days=1)
     _end = _end_dt.strftime(_fmt)

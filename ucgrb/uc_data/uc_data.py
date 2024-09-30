@@ -69,7 +69,7 @@ class UCData:
         self._initialize_rolling_opt_list()
         [csv_files, dir_list] = self._get_csv_files(self.config["csv_data_dir"])
         _append_csv_data_dir_to_info_file(self, dir_list)
-        self.power_system = _PowerSystem(csv_files)
+        self.power_system = _PowerSystem(csv_files, self)
 
     def update_info_file_on_exit(self, sw=None):
         """全工程終了時に実行情報ファイルをアップデートする."""
@@ -132,7 +132,7 @@ class UCData:
         # 対象: p (大規模発電機の出力), e_ess (エネルギー貯蔵装置の蓄電量)
         # 引き継ぎ期間B「inherited_period_B_start_time」と「inherited_period_B_end_time」
         # 対象: u, su, sd (原子力・火力発電機の運転状態)
-        _td = self.config["time_particle_size"]
+        _td = self.config["time_series_granularity"]
         for i in range(len(self.config["rolling_opt_list"])):
             if i == len(self.config["rolling_opt_list"]) - 1:
                 continue
@@ -185,24 +185,53 @@ class _PowerSystem:
     ----------
     csv_files : list
         CSV形式で書かれた電力系統データファイル群
-    timedelta : datetime.timedelta
-        本シミュレーションの時間粒度
+    uc_data : CLASS
+        クラス「UCData」のオブジェクト
     """
 
-    def __init__(self, csv_files):
+    def __init__(self, csv_files, uc_data):
+        _f = str(uc_data.config["time_series_granularity"]) + "min"
         for _csv_file in csv_files:
             _basename = os.path.splitext(os.path.basename(_csv_file))[0]
             if _basename.find("__") != -1:
                 _basename = _basename[: _basename.find("__")]
             _new_df = pd.read_csv(_csv_file, skipinitialspace=True)
             _df = getattr(self, _basename, pd.DataFrame())
-            _df = _df.append(_new_df, ignore_index=True)
+            _df = pd.concat([_df, _new_df], ignore_index=True)
             if "time" in _df:
-                _df["time"] = pd.to_datetime(_df["time"]).dt.strftime("%Y-%m-%dT%H-%M-%S")
-                _df = _df.set_index("time")
+                _df["time"] = pd.to_datetime(_df["time"])
+                _df.set_index("time", inplace=True)
+                if _basename not in uc_data.config["time_series_not_to_be_interpolated"]:
+                    if _basename in uc_data.config["time_series_to_be_linearly_interpolated"]:
+                        _df = (
+                            _df.resample(_f, label="right", closed="right")
+                            .mean()
+                            .interpolate("linear")
+                        )
+                    else:
+                        _df = _df.resample(_f, label="right", closed="right").mean().bfill()
+                _df.reset_index(inplace=True)
+                _df = _df.rename(columns={"index": "time"})
+                _df["time"] = _df["time"].dt.strftime("%Y-%m-%dT%H-%M-%S")
+                _df.set_index("time", inplace=True)
+            if "of_the_clock" in _df:
+                _df["of_the_clock"] = pd.to_datetime(_df["of_the_clock"], format="%H:%M:%S")
+                _df_first = _df.tail(1).copy()
+                _df = pd.concat([_df_first, _df])
+                _df.reset_index(inplace=True)
+                last_row = _df.shape[0] - 1
+                _df.loc[last_row, "of_the_clock"] = _df.loc[
+                    last_row, "of_the_clock"
+                ] + pd.Timedelta(days=1)
+                _df.set_index("of_the_clock", inplace=True)
+                _df = _df.resample(_f, label="right", closed="right").bfill()
+                _df.reset_index(inplace=True)
+                _df["of_the_clock"] = _df["of_the_clock"].dt.strftime("%H:%M:%S")
+                _df.drop(0, inplace=True)
+                _df.drop(columns="index", inplace=True)
             if "start_day" in _df:
                 _df["start_day"] = pd.to_datetime(_df["start_day"])
-                _df = _df.set_index("start_day")
+                _df.set_index("start_day", inplace=True)
             if "day" in _df:
                 _df["day"] = pd.to_datetime(_df["day"]).dt.strftime("%Y/%m/%d")
             setattr(self, _basename, _df)

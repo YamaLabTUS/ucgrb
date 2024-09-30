@@ -74,14 +74,14 @@ def about_ess(ws, period_name, timeline, time_format, area, m, uc_data, uc_dicts
 
         _value_col = ["Energy Plan"]
         for time in timeline:
-            if uc_data.config["set_e_ess_bc_constrs"] and time == uc_dicts.timeline[-1]:
+            if uc_data.config["set_e_ess_balance_constrs"] and time == uc_dicts.timeline.iloc[-1]:
                 _value = (
                     uc_dicts.ess_para["E_CAP"][name, area]
                     * uc_dicts.ess_para["E_R_base"][name, area]
                     / 100
                 )
             elif (
-                uc_data.config["set_e_ess_plan_constrs"]
+                uc_data.config["set_e_ess_schedule_constrs"]
                 and time in uc_dicts.whole_timeline_ess_plan.values
             ):
                 _value = (
@@ -198,6 +198,18 @@ def about_ess(ws, period_name, timeline, time_format, area, m, uc_data, uc_dicts
         _value_col = ["Output"]
         for time in timeline:
             _value = uc_dicts.p_ess_d[time, name, area].X - uc_dicts.p_ess_c[time, name, area].X
+            _value_col.append(_value)
+        _append_col(ws, _value_col)
+
+        _value_col = ["Output (Discharge)"]
+        for time in timeline:
+            _value = uc_dicts.p_ess_d[time, name, area].X
+            _value_col.append(_value)
+        _append_col(ws, _value_col)
+
+        _value_col = ["Output (Charge)"]
+        for time in timeline:
+            _value = -uc_dicts.p_ess_c[time, name, area].X
             _value_col.append(_value)
         _append_col(ws, _value_col)
 

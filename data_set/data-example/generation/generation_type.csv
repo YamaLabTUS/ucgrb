@@ -1,6 +1,6 @@
-﻿name,EF,fuel_cnsmp_per_unit_Mcal,EF_startup,fuel_price_startup
-HYDRO,,,,
-NUCL,,,,
-COAL,2.33,0.0001628,2.71,133.46
-GAS,2.7,0.00007663,2.71,133.46
-OIL,2.62,0.0001095,2.71,133.46
+﻿name,EF,fuel_cnsmp_per_unit_Mcal,EF_startup,fuel_price_startup,kind
+HYDRO,,,,,hydro
+NUCL,,,,,nuclear
+COAL,2.33,0.0001628,2.71,133.46,thermal
+GAS,2.7,0.00007663,2.71,133.46,thermal
+OIL,2.62,0.0001095,2.71,133.46,thermal

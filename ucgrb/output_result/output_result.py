@@ -123,6 +123,10 @@ def _export_xlsx_file(m, uc_data, uc_dicts, i):
             filename = _opt["name"] + "_PI.json"
             filepath = "./" + str(uc_data.config["_export_dir"]) + "/json/" + filename
 
+            m_Pi.Params.JSONSolDetail = 1
+            for c in m_Pi.getConstrs():
+                c.CTag = c.ConstrName
+            m_Pi.update()
             m_Pi.write(filepath)
 
             zip_file = zipfile.ZipFile(

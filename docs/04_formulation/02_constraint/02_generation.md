@@ -31,12 +31,12 @@
 $$
 \begin{align}
    p_{t,g} + p_{t,g}^{\text{GF\\&LFC}\,\text{UP}} + p_{t,g}^{\text{Tert}\,\text{UP}}
-    & = \left( P_{g}^{\text{MAX}} - P_{t,g}^{\text{des}} \right) u_{t,g}
+    & \leq \left( P_{g}^{\text{MAX}} - P_{t,g}^{\text{des}} \right) u_{t,g}
     & \forall t \in T, \forall g \in G_{N\\&T}
     & \qquad (1)
 \\
    p_{t,g} + p_{t,g}^{\text{GF\\&LFC}\,\text{UP}} + p_{t,g}^{\text{Tert}\,\text{UP}}
-    & = \left( P_{g}^{\text{MAX}} - P_{t,g}^{\text{des}} \right) U_{t,g}
+    & \leq \left( P_{g}^{\text{MAX}} - P_{t,g}^{\text{des}} \right) U_{t,g}
     & \forall t \in T, \forall g \in G_{HYDRO}
     & \qquad (2)
 \end{align}
@@ -47,12 +47,12 @@ $$
 $$
 \begin{align}
    p_{t,g} - p_{t,g}^{\text{GF\\&LFC}\,\text{DOWN}} - p_{t,g}^{\text{Tert}\,\text{DOWN}}
-    & = P_{g}^{\text{MIN}} u_{t,g}
+    & \geq P_{g}^{\text{MIN}} u_{t,g}
     & \forall t \in T, \forall g \in G_{N\\&T}
     & \qquad (1)
 \\
    p_{t,g} - p_{t,g}^{\text{GF\\&LFC}\,\text{DOWN}} - p_{t,g}^{\text{Tert}\,\text{DOWN}}
-    & = P_{g}^{\text{MIN}} U_{t,g}
+    & \geq P_{g}^{\text{MIN}} U_{t,g}
     & \forall t \in T, \forall g \in G_{HYDRO}
     & \qquad (2)
 \end{align}
@@ -100,20 +100,24 @@ $$
 \end{align}
 $$
 
-|変数                  |状態1|状態2|状態3|状態4|備考    |
-|---------------------|:--:|:--:|:--:|:--:|:-----:|
-|$u_{t,g}$            |1   |1   |0   |0   |       |
-|$u_{t-1,g}$          |1   |0   |1   |0   |       |
-|$u_{t,g} - u_{t-1,g}$|0   |1   |-1  |0   |式(1)右辺|
-|$su_{t,g} - sd_{t,g}$|0   |1   |-1  |0   |式(1)左辺|
-|$su_{t,g}$           |0   |1   |0   |0   |式(2)より $sd_{t,g}$ と同時に1となることはない|
-|$sd_{t,g}$           |0   |0   |1   |0   |式(2)より $su_{t,g}$ と同時に1となることはない|
+| 変数                  | 状態1 | 状態2 | 状態3 | 状態4 |                      備考                      |
+| --------------------- | :---: | :---: | :---: | :---: | :--------------------------------------------: |
+| $u_{t,g}$             |   1   |   1   |   0   |   0   |                                                |
+| $u_{t-1,g}$           |   1   |   0   |   1   |   0   |                                                |
+| $u_{t,g} - u_{t-1,g}$ |   0   |   1   |  -1   |   0   |                   式(1)右辺                    |
+| $su_{t,g} - sd_{t,g}$ |   0   |   1   |  -1   |   0   |                   式(1)左辺                    |
+| $su_{t,g}$            |   0   |   1   |   0   |   0   | 式(2)より $sd_{t,g}$ と同時に1となることはない |
+| $sd_{t,g}$            |   0   |   0   |   1   |   0   | 式(2)より $su_{t,g}$ と同時に1となることはない |
+
+| 機能名                                                   | デフォルト | 設定ファイル上での設定名 | Trueとしたときの上記式からの変更内容                      |
+| :------------------------------------------------------- | :--------- | :----------------------- | :-------------------------------------------------------- |
+| 原子力・火力発電機の起動停止に関するバイナリ変数の連続化 | False      | make_u_continuous        | バイナリ変数$u_{t,g}, su_{t,g}, sd_{t,g}$を連続変数にする |
 
 ## 原子力・火力発電機の必要最小運転時間制約
 
 $$
 \begin{align}
-   \sum_{i=t+1-ReqRunTime_{g}}^{t} su_{i,g}
+   \sum_{i=t+1-MinUpTime_{g}}^{t} su_{i,g}
     & \leq u_{t,g}
     & \forall t \in T, \forall g \in G_{N\\&T}
 \end{align}
@@ -123,11 +127,31 @@ $$
 
 $$
 \begin{align}
-   \sum_{i=t+1-ReqStopTime_{g}}^{t} sd_{i,g}
+   \sum_{i=t+1-MinDownTime_{g}}^{t} sd_{i,g}
     & \leq 1 - u_{t,g}
     & \forall t \in T, \forall g \in G_{N\\&T}
 \end{align}
 $$
+
+## 原子力・火力発電機の出力変化速度制約
+
+$$
+\begin{align}
+   p_{t,g} + p_{t,g}^{\text{Tert}\,\text{UP}} - P_{g}^{\text{MAX}} (1-u_{t,g})
+    & \leq p_{t-1,g} + 60 \frac{R_{g}^{\text{ramp,MAX}}}{100}  P_{g}^{\text{MAX}} + P_{g}^{\text{MAX}} (1-u_{t-1,g})
+    & \forall t \in T, \forall g \in G_{N\\&T}
+    & \qquad (1)
+\\
+   p_{t,g} - p_{t,g}^{\text{Tert}\,\text{DOWN}}  + P_{g}^{\text{MAX}} (1-u_{t,g})
+    & \geq p_{t-1,g} - 60 \frac{R_{g}^{\text{ramp,MAX}}}{100} P_{g}^{\text{MAX}} - P_{g}^{\text{MAX}} (1-u_{t-1,g})
+    & \forall t \in T, \forall g \in G_{N\\&T}
+    & \qquad (2)
+\end{align}
+$$
+
+| 機能名                                         | デフォルト | 設定ファイル上での設定名 | Falseとしたときの上記式からの変更内容 |
+| :--------------------------------------------- | :--------- | :----------------------- | :------------------------------------ |
+| 原子力・火力発電機の出力変化速度制約制約の考慮 | True       | set_ramp_constr          | 上記式を考慮しない                    |
 
 ## 原子力・火力発電機の計画停止期間制約
 

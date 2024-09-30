@@ -31,10 +31,74 @@ csv_data_dir:
   - "data1"
   - "data2"
 ```
+### time_series_granularity
+
+- **書式: 数字**
+
+- **デフォルト値: `60`**
+
+最適化の時間粒度。分単位で表記。60以下の場合は、60の約数でなくてはいけない。
+60より大きい値の場合は、1440（24時間の分表記）の約数または倍数でなくてはいけない。
+
+### time_series_to_be_linearly_interpolated
+
+- **書式: 配列**
+
+- **デフォルト値: `["demand", "PV_ACT", "PV_FCST_L", "PV_FCST_M", "PV_FCST_U", "WF_ACT", "WF_FCST_L", "WF_FCST_M", "WF_FCST_U", "others"]`**
+
+入力時系列が設定時間粒度よりも粗い場合、自動で補間が実行される。その時の補間方法を線形とする時系列名を指定する。
+この項目で指定されていない時系列は、矩形補間となる。
+
+記載例：
+
+```yaml
+time_series_to_be_linearly_interpolated:
+    - "demand"
+    - "PV_ACT"
+    - "PV_FCST_L"
+    - "PV_FCST_M"
+    - "PV_FCST_U"
+    - "WF_ACT"
+    - "WF_FCST_L"
+    - "WF_FCST_M"
+    - "WF_FCST_U"
+    - "others"
+
+```
+
+または
+
+```yaml
+time_series_to_be_linearly_interpolated: ["demand", "PV_ACT", "PV_FCST_L", "PV_FCST_M", "PV_FCST_U", "WF_ACT", "WF_FCST_L", "WF_FCST_M", "WF_FCST_U", "others"]
+```
+
+
+### time_series_not_to_be_interpolated
+
+- **書式: 配列**
+
+- **デフォルト値: `["E_R_plan"]`**
+
+入力時系列が設定時間粒度よりも粗い場合、自動で補間が実行される。その時に補間が実行されない時系列名を指定する。
+この項目で指定されていない時系列は、矩形補間または線形補間となる。
+
+記載例：
+
+```yaml
+time_series_not_to_be_interpolated:
+    - "E_R_plan"
+```
+
+または
+
+```yaml
+time_series_to_be_linearly_interpolated: ["E_R_plan"]
+```
+
 
 ### areas
 
-- **書式:　文字列または配列**
+- **書式: 文字列または配列**
 
 - **デフォルト値: `"ALL"`**
 
@@ -62,31 +126,6 @@ areas: ["Hokkaido", "Tohoku", "Tokyo", "Chubu", "Hokuriku", "Kansai", "Chugoku",
 ```
 
 
-
-### nuclear_and_thermal_generation_type
-
-- **書式: 文字列または配列**
-
-- **デフォルト値: `["NUCL", "COAL", "GAS", "OIL"]`**
-
-原子力発電機と火力発電機に相当する種類名。
-
-### nuclear_generation_type
-
-- **書式: 文字列または配列**
-
-- **デフォルト値: `["NUCL"]`**
-
-原子力発電機に相当する種類名。
-
-### hydro_generation_type
-
-- **書式: 文字列または配列**
-
-- **デフォルト値: `["HYDRO"]`**
-
-水力発電機に相当する種類名。
-
 ### setting_method_of_TTC_and_Margin
 
 - **書式: 文字列**
@@ -98,7 +137,7 @@ areas: ["Hokkaido", "Tohoku", "Tokyo", "Chubu", "Hokuriku", "Kansai", "Chugoku",
 - `"season"`: 月や時間帯で指定
 - `"timeline"`: 最適化時間粒度毎に設定
 
-## Gurobiソルバのパラメータ設定
+## Guribiソルバのパラメータ設定
 
 ### grb_MIPGap
 

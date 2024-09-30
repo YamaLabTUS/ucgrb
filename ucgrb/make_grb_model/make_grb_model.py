@@ -14,6 +14,7 @@ import gurobipy as gp
 
 from .._make_dir import _make_dir
 from ._set_constraints import _set_constraints
+from ._set_constraints._set_ess_constrs import _remove_duplicate_constr_about_ess
 from ._set_object_function import _set_object_function
 from ._set_variables import _set_variables
 
@@ -51,6 +52,8 @@ def make_grb_model(uc_data, uc_dicts, i):
     _set_constraints(model, uc_data, uc_dicts)
     _set_options(model, uc_data, uc_dicts)
     model.update()
+    _remove_duplicate_constr_about_ess(model, uc_data, uc_dicts)
+
     if uc_data.config["export_mps_file"]:
         _dir = _make_dir(str(uc_data.config["_export_dir"]), "mps")
         _opt = uc_data.config["rolling_opt_list"][i]

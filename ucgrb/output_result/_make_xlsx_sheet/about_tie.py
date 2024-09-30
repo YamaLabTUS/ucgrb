@@ -54,50 +54,61 @@ def about_tie(ws, period_name, timeline, time_format, tie, f, t, m, uc_data, uc_
 
     _value_col = ["TTC (Forward)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = uc_dicts.tie_operation_para["TTC_forward"][time, tie]
-        else:
-            _value = 0
+        _value = uc_dicts.tie_operation_para["TTC_forward"][time, tie]
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["TTC - Margin (Forward)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.tie_operation_para["TTC_forward"][time, tie]
-                - uc_dicts.tie_operation_para["Margin_forward"][time, tie]
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.tie_operation_para["TTC_forward"][time, tie]
+            - uc_dicts.tie_operation_para["Margin_forward"][time, tie]
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["TTC (Counter)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = -uc_dicts.tie_operation_para["TTC_counter"][time, tie]
-        else:
-            _value = 0
+        _value = -uc_dicts.tie_operation_para["TTC_counter"][time, tie]
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["TTC - Margin (Counter)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                -uc_dicts.tie_operation_para["TTC_counter"][time, tie]
-                + uc_dicts.tie_operation_para["Margin_counter"][time, tie]
-            )
-        else:
-            _value = 0
+        _value = (
+            -uc_dicts.tie_operation_para["TTC_counter"][time, tie]
+            + uc_dicts.tie_operation_para["Margin_counter"][time, tie]
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     ws.cell(column=ws.max_column + 1, row=1, value=" ")
     _append_col(
         ws,
-        ["", "", "", t, "↑", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "↓", f],
+        [
+            "",
+            "",
+            "",
+            t,
+            "↑",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "↓",
+            f,
+        ],
     )
 
     _make_constraint_chart(
@@ -148,34 +159,51 @@ def about_tie(ws, period_name, timeline, time_format, tie, f, t, m, uc_data, uc_
 
     _value_col = ["MAX (Forward)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.tie_operation_para["TTC_forward"][time, tie]
-                - uc_dicts.p_tie_f[time, tie, f, t].X
-                + uc_dicts.p_tie_c[time, tie, f, t].X
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.tie_operation_para["TTC_forward"][time, tie]
+            - uc_dicts.p_tie_f[time, tie, f, t].X
+            + uc_dicts.p_tie_c[time, tie, f, t].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["MAX (Counter)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                -uc_dicts.tie_operation_para["TTC_counter"][time, tie]
-                + uc_dicts.p_tie_c[time, tie, f, t].X
-                - uc_dicts.p_tie_f[time, tie, f, t].X
-            )
-        else:
-            _value = 0
+        _value = (
+            -uc_dicts.tie_operation_para["TTC_counter"][time, tie]
+            + uc_dicts.p_tie_c[time, tie, f, t].X
+            - uc_dicts.p_tie_f[time, tie, f, t].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     ws.cell(column=ws.max_column + 1, row=1, value=" ")
     _append_col(
         ws,
-        ["", "", "", t, "↑", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "↓", f],
+        [
+            "",
+            "",
+            "",
+            t,
+            "↑",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "↓",
+            f,
+        ],
     )
 
     _make_constraint_chart(
@@ -226,34 +254,51 @@ def about_tie(ws, period_name, timeline, time_format, tie, f, t, m, uc_data, uc_
 
     _value_col = ["MAX (Forward)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                uc_dicts.tie_operation_para["TTC_counter"][time, tie]
-                - uc_dicts.p_tie_c[time, tie, f, t].X
-                + uc_dicts.p_tie_f[time, tie, f, t].X
-            )
-        else:
-            _value = 0
+        _value = (
+            uc_dicts.tie_operation_para["TTC_counter"][time, tie]
+            - uc_dicts.p_tie_c[time, tie, f, t].X
+            + uc_dicts.p_tie_f[time, tie, f, t].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     _value_col = ["MAX (Counter)"]
     for time in timeline:
-        if time in uc_dicts.timeline:
-            _value = (
-                -uc_dicts.tie_operation_para["TTC_forward"][time, tie]
-                + uc_dicts.p_tie_f[time, tie, f, t].X
-                - uc_dicts.p_tie_c[time, tie, f, t].X
-            )
-        else:
-            _value = 0
+        _value = (
+            -uc_dicts.tie_operation_para["TTC_forward"][time, tie]
+            + uc_dicts.p_tie_f[time, tie, f, t].X
+            - uc_dicts.p_tie_c[time, tie, f, t].X
+        )
         _value_col.append(_value)
     _append_col(ws, _value_col)
 
     ws.cell(column=ws.max_column + 1, row=1, value=" ")
     _append_col(
         ws,
-        ["", "", "", t, "↑", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "↓", f],
+        [
+            "",
+            "",
+            "",
+            t,
+            "↑",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "↓",
+            f,
+        ],
     )
 
     _make_constraint_chart(

@@ -9,7 +9,8 @@ import datetime as dt
 
 
 def _set_ess_constrs(m, uc_data, uc_dicts):
-    _td = dt.timedelta(minutes=uc_data.config["time_particle_size"])
+    _td = dt.timedelta(minutes=uc_data.config["time_series_granularity"])
+    tsg_ratio = int(uc_data.config["time_series_granularity"]) / 60
 
     if uc_data.config["set_p_ess_max_constrs"]:
         uc_dicts.constrs_p_max_ess_d = m.addConstrs(
@@ -149,9 +150,11 @@ def _set_ess_constrs(m, uc_data, uc_dicts):
                     area,
                 ]
                 - uc_dicts.p_ess_d[time, name, area]
+                * tsg_ratio
                 / (uc_dicts.ess_para["eta"][name, area] / 100)
                 + (uc_dicts.ess_para["gamma"][name, area] / 100)
                 * uc_dicts.p_ess_c[time, name, area]
+                * tsg_ratio
                 for time in uc_dicts.timeline
                 for name, area in uc_dicts.ess
             ),
@@ -167,6 +170,7 @@ def _set_ess_constrs(m, uc_data, uc_dicts):
                     uc_dicts.p_ess_gf_lfc_down[time, name, area]
                     + uc_dicts.p_ess_tert_down[time, name, area]
                 )
+                * tsg_ratio
                 <= uc_dicts.ess_para["E_CAP"][name, area]
                 * (uc_dicts.ess_para["E_R_MAX"][name, area] / 100)
                 for time in uc_dicts.timeline
@@ -183,6 +187,7 @@ def _set_ess_constrs(m, uc_data, uc_dicts):
                     uc_dicts.p_ess_gf_lfc_up[time, name, area]
                     + uc_dicts.p_ess_tert_up[time, name, area]
                 )
+                * tsg_ratio
                 / (uc_dicts.ess_para["eta"][name, area] / 100)
                 >= uc_dicts.ess_para["E_CAP"][name, area]
                 * (uc_dicts.ess_para["E_R_MIN"][name, area] / 100)
@@ -192,9 +197,9 @@ def _set_ess_constrs(m, uc_data, uc_dicts):
             "min_energy_storage",
         )
 
-    if uc_data.config["set_e_ess_bc_constrs"]:
-        zero_time = uc_dicts.timeline_pre_period[-1]
-        end_time = uc_dicts.timeline[-1]
+    if uc_data.config["set_e_ess_balance_constrs"]:
+        zero_time = uc_dicts.timeline_pre_period.iloc[-1]
+        end_time = uc_dicts.timeline.iloc[-1]
         for name, area in uc_dicts.ess:
             _e_ess = (
                 uc_dicts.ess_para["E_CAP"][name, area]
@@ -219,9 +224,9 @@ def _set_ess_constrs(m, uc_data, uc_dicts):
                 "boundary_condition_of_energy_storage_" + name + "_end",
             )
 
-    if uc_data.config["set_e_ess_plan_constrs"]:
+    if uc_data.config["set_e_ess_schedule_constrs"]:
         for time, name, area in uc_dicts.e_ess_plan:
-            if time in uc_dicts.timeline_pre_period.values:
+            if time in uc_dicts.timeline_pre_period.values():
                 _e_ess = (
                     uc_dicts.ess_para["E_CAP"][name, area]
                     * uc_dicts.e_ess_plan_para["value"][time, name, area]
@@ -256,3 +261,26 @@ def _set_ess_constrs(m, uc_data, uc_dicts):
                     uc_dicts.dchg_ess[time, name, area].setAttr("ub", 0)
                     uc_dicts.chg_ess[time, name, area].setAttr("lb", 0)
                     uc_dicts.chg_ess[time, name, area].setAttr("ub", 0)
+
+
+def _remove_duplicate_constr_about_ess(m, uc_data, uc_dicts):
+    """
+    ESSに関する制約で、境界条件制約で計画運用制約で上書きする際に
+    矛盾する制約を取り除く
+    ※model.update後に実施する必要があるため、別途関数を用意
+    """
+
+    if (
+        uc_data.config["set_e_ess_balance_constrs"]
+        and uc_data.config["set_e_ess_schedule_constrs"]
+    ):
+        for time, name, area in uc_dicts.e_ess_plan:
+            if time == uc_dicts.timeline.iloc[-1]:
+                # gencons = m.getConstrs()
+                duplicate_constr_name = f"boundary_condition_of_energy_storage_{name}_end"
+                try:
+                    duplicate_constr = m.getConstrByName(duplicate_constr_name)
+                except Exception:
+                    continue
+                else:
+                    m.remove(duplicate_constr)

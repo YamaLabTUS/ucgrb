@@ -340,7 +340,7 @@
 
 **ファイル名: tie_calculation_section_day.csv, tie_calculation_section_of_the_clock.csv**
 
-- 連系線の運用容量算出断面を示す。
+- 連系線の運用容量設定の季節区分を示す。
 - **setting_method_of_TTC_and_Margin**=`season`のときに用いられる。
 - 月と平日か休日かを示した365日のデータを「tie_calculation_section_day.csv」に、昼か夜かの24時間のデータを「tie_calculation_section_of_the_clock.csv」に示す。つまり、計２ファイルが必要となる。
 

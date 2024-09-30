@@ -1,6 +1,10 @@
 # ucgrb
+
+**[Click here for the README in English.](README_EN.md)**
+
 Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以下UC）最適化を実施するためのPythonパッケージ。
 連系線で接続された複数地域の電力系統を対象としたUC最適化を実施することができる。
+
 
 ## 目次
 
@@ -40,6 +44,7 @@ Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以�
       1. [原子力・火力発電機の燃料費関数出力比例係数算出方法](docs/04_formulation/06_appendix/01_fuel_cost.md)
       2. [原子力・火力発電機の最大出力・最小出力算出方法](docs/04_formulation/06_appendix/02_max_min_output.md)
       3. [大規模発電機のCO<sub>2</sub>排出量算出方法](docs/04_formulation/06_appendix/03_emission.md)
+      4. [時間粒度の変更による定式内容の変化](docs/04_formulation/06_appendix/04_time_series_granularity.md)
 5. 電力系統データCSVファイルの記述方法
    1. [概要](docs/05_csvfile/01_about.md)
    2. [発電機データ](docs/05_csvfile/02_generation.md)
@@ -55,7 +60,7 @@ Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以�
 7. 開発者に向けて
    1. [開発者向け設定値](docs/07_for_developer/01_config_setting.md)
    2. [自動整形に関して](docs/07_for_developer/02_formatter.md)
-
+8. [v3で用いていた電力系統データCSVファイルからの変更方法](docs/08_how_to_modify_csvfile.md)
 
 
 ## ライセンス

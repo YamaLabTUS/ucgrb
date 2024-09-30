@@ -63,12 +63,25 @@ def _make_variables(m, uc_data, uc_dicts, i, uc_vars):
         for time in uc_dicts.timeline_inherited_B:
             for name, g_type, area in uc_dicts.n_and_t_generation:
                 _key = (time, name, g_type, area)
-                _value = Decimal(uc_dicts.u[_key].X).to_integral_value()
+
+                if uc_data.config["make_u_continuous"]:
+                    _value = uc_dicts.u[_key].X
+                else:
+                    _value = Decimal(uc_dicts.u[_key].X).to_integral_value()
                 _u.append((_key, _value))
-                _value = Decimal(uc_dicts.su[_key].X).to_integral_value()
+
+                if uc_data.config["make_u_continuous"]:
+                    _value = uc_dicts.su[_key].X
+                else:
+                    _value = Decimal(uc_dicts.su[_key].X).to_integral_value()
                 _su.append((_key, _value))
-                _value = Decimal(uc_dicts.sd[_key].X).to_integral_value()
+
+                if uc_data.config["make_u_continuous"]:
+                    _value = uc_dicts.sd[_key].X
+                else:
+                    _value = Decimal(uc_dicts.sd[_key].X).to_integral_value()
                 _sd.append((_key, _value))
+
                 if uc_data.config["export_inherited_vars_to_json"] is True:
                     uc_dicts.u[_key].VTag = uc_dicts.u[_key].VarName
                     uc_dicts.su[_key].VTag = uc_dicts.su[_key].VarName

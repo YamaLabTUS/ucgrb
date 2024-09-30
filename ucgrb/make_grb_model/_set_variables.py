@@ -42,15 +42,29 @@ def _set_variables(m, uc_data, uc_dicts):
 
     if uc_data.config["set_u"]:
         _n = "operation_status_of_generation"
-        uc_dicts.u = m.addVars(_timeline, uc_dicts.n_and_t_generation, vtype=GRB.BINARY, name=_n)
+        if uc_data.config["make_u_continuous"]:
+            _vt = GRB.CONTINUOUS
+        else:
+            _vt = GRB.BINARY
+
+        uc_dicts.u = m.addVars(_timeline, uc_dicts.n_and_t_generation, vtype=_vt, ub=1, name=_n)
 
     if uc_data.config["set_su"]:
         _n = "start_up_of_generation"
-        uc_dicts.su = m.addVars(_timeline, uc_dicts.n_and_t_generation, vtype=GRB.BINARY, name=_n)
+        if uc_data.config["make_u_continuous"]:
+            _vt = GRB.CONTINUOUS
+        else:
+            _vt = GRB.BINARY
+        uc_dicts.su = m.addVars(_timeline, uc_dicts.n_and_t_generation, vtype=_vt, ub=1, name=_n)
 
     if uc_data.config["set_sd"]:
         _n = "shut_down_of_generation"
-        uc_dicts.sd = m.addVars(_timeline, uc_dicts.n_and_t_generation, vtype=GRB.BINARY, name=_n)
+        if uc_data.config["make_u_continuous"]:
+            _vt = GRB.CONTINUOUS
+        else:
+            _vt = GRB.BINARY
+
+        uc_dicts.sd = m.addVars(_timeline, uc_dicts.n_and_t_generation, vtype=_vt, ub=1, name=_n)
 
     # 再生可能エネルギー - Renewable energy -
     if uc_data.config["set_p_pv_suppr"]:
@@ -124,9 +138,20 @@ def _set_variables(m, uc_data, uc_dicts):
 
     if uc_data.config["set_dchg_and_chg_ess"]:
         _n = "discharge_status_of_ESS"
-        uc_dicts.dchg_ess = m.addVars(_timeline, uc_dicts.ess, vtype=GRB.BINARY, name=_n)
+        if uc_data.config["make_dchg_chg_ess_continuous"]:
+            _vt = GRB.CONTINUOUS
+        else:
+            _vt = GRB.BINARY
+
+        uc_dicts.dchg_ess = m.addVars(_timeline, uc_dicts.ess, vtype=_vt, ub=1, name=_n)
+
         _n = "charge_status_of_ESS"
-        uc_dicts.chg_ess = m.addVars(_timeline, uc_dicts.ess, vtype=GRB.BINARY, name=_n)
+        if uc_data.config["make_dchg_chg_ess_continuous"]:
+            _vt = GRB.CONTINUOUS
+        else:
+            _vt = GRB.BINARY
+
+        uc_dicts.chg_ess = m.addVars(_timeline, uc_dicts.ess, vtype=_vt, ub=1, name=_n)
 
     # 連系線 - Tie line -
     if uc_data.config["set_p_tie"]:

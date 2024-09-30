@@ -29,7 +29,7 @@ def _set_tie_line_constrs(m, uc_data, uc_dicts):
                     uc_dicts.tie_operation_para["TTC_counter"][time, name]
                     - uc_dicts.tie_operation_para["Margin_counter"][time, name]
                 )
-                * uc_dicts.d[time, name, f, t]
+                * (1 - uc_dicts.d[time, name, f, t])
                 for time in uc_dicts.timeline
                 for name, f, t in uc_dicts.tie
             ),

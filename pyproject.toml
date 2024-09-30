@@ -1,3 +1,29 @@
+[tool.poetry]
+name = "ucgrb"
+version = "5.0.0"
+description = "Unit Commitment (UC) optimization for multi-area power systems connected by tie lines using Gurobi Optimizer."
+authors = ["YamaLabTUS"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.1"
+openpyxl = "^3.1.2"
+gurobipy = "^11.0.1"
+pyyaml = "^6.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+spyder-kernels = "^2.5.1"
+poethepoet = "^0.25.1"
+black = "^24.4.0"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.black]
 line-length = 98
 include = '\.pyi?$'
@@ -5,3 +31,7 @@ include = '\.pyi?$'
 [tool.isort]
 profile = 'black'
 line_length = 98
+
+[tool.poe.tasks]
+black = "black ./ucgrb"
+isort = "isort ./ucgrb"

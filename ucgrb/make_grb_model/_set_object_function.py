@@ -24,10 +24,13 @@ def _set_object_function(m, uc_data, uc_dicts):
     """
     _of = gp.LinExpr()
 
+    tsg_ratio = int(uc_data.config["time_series_granularity"]) / 60
+
     if uc_data.config["set_C_coef_on_objective_function"]:
         _of += gp.quicksum(
             uc_dicts.p[time, name, g_type, area]
             * uc_dicts.generation_para["C_coef"][name, g_type, area]
+            * tsg_ratio
             for time in uc_dicts.timeline
             for name, g_type, area in uc_dicts.n_and_t_generation
         )
@@ -36,6 +39,7 @@ def _set_object_function(m, uc_data, uc_dicts):
         _of += gp.quicksum(
             uc_dicts.u[time, name, g_type, area]
             * uc_dicts.generation_para["C_intc"][name, g_type, area]
+            * tsg_ratio
             for time in uc_dicts.timeline
             for name, g_type, area in uc_dicts.n_and_t_generation
         )
@@ -50,7 +54,9 @@ def _set_object_function(m, uc_data, uc_dicts):
 
     if uc_data.config["set_C_ess_short_on_objective_function"]:
         _of += gp.quicksum(
-            uc_dicts.e_ess_short[time, ess, area] * uc_dicts.ess_para["C_ess_short"][ess, area]
+            uc_dicts.e_ess_short[time, ess, area]
+            * uc_dicts.ess_para["C_ess_short"][ess, area]
+            * tsg_ratio
             for time in uc_dicts.timeline
             for ess, area in uc_dicts.ess
         )
@@ -59,46 +65,51 @@ def _set_object_function(m, uc_data, uc_dicts):
         _of += gp.quicksum(
             uc_dicts.e_ess_surplus[time, ess, area]
             * uc_dicts.ess_para["C_ess_surplus"][ess, area]
+            * tsg_ratio
             for time in uc_dicts.timeline
             for ess, area in uc_dicts.ess
         )
 
     if uc_data.config["set_C_short_on_objective_function"]:
         _of += gp.quicksum(
-            uc_dicts.p_short[time, area] * uc_dicts.area_para["C_short"][area]
+            uc_dicts.p_short[time, area] * uc_dicts.area_para["C_short"][area] * tsg_ratio
             for time in uc_dicts.timeline
             for area in uc_dicts.area
         )
 
     if uc_data.config["set_C_surplus_on_objective_function"]:
         _of += gp.quicksum(
-            uc_dicts.p_surplus[time, area] * uc_dicts.area_para["C_surplus"][area]
+            uc_dicts.p_surplus[time, area] * uc_dicts.area_para["C_surplus"][area] * tsg_ratio
             for time in uc_dicts.timeline
             for area in uc_dicts.area
         )
 
     if uc_data.config["set_C_PV_suppr_on_objective_function"]:
         _of += gp.quicksum(
-            uc_dicts.p_pv_suppr[time, area] * uc_dicts.area_para["C_PV_suppr"][area]
+            uc_dicts.p_pv_suppr[time, area] * uc_dicts.area_para["C_PV_suppr"][area] * tsg_ratio
             for time in uc_dicts.timeline
             for area in uc_dicts.area
         )
 
     if uc_data.config["set_C_WF_suppr_on_objective_function"]:
         _of += gp.quicksum(
-            uc_dicts.p_wf_suppr[time, area] * uc_dicts.area_para["C_WF_suppr"][area]
+            uc_dicts.p_wf_suppr[time, area] * uc_dicts.area_para["C_WF_suppr"][area] * tsg_ratio
             for time in uc_dicts.timeline
             for area in uc_dicts.area
         )
 
     if uc_data.config["set_C_Tert_short_on_objective_function"]:
         _of += gp.quicksum(
-            uc_dicts.p_tert_up_short[time, area] * uc_dicts.area_para["C_Tert_short"][area]
+            uc_dicts.p_tert_up_short[time, area]
+            * uc_dicts.area_para["C_Tert_short"][area]
+            * tsg_ratio
             for time in uc_dicts.timeline
             for area in uc_dicts.area
         )
         _of += gp.quicksum(
-            uc_dicts.p_tert_down_short[time, area] * uc_dicts.area_para["C_Tert_short"][area]
+            uc_dicts.p_tert_down_short[time, area]
+            * uc_dicts.area_para["C_Tert_short"][area]
+            * tsg_ratio
             for time in uc_dicts.timeline
             for area in uc_dicts.area
         )
@@ -107,6 +118,7 @@ def _set_object_function(m, uc_data, uc_dicts):
         _of += gp.quicksum(
             uc_dicts.tie_para["C_tie_penalty"][name, f, t]
             * (uc_dicts.p_tie_f[time, name, f, t] + uc_dicts.p_tie_c[time, name, f, t])
+            * tsg_ratio
             for time in uc_dicts.timeline
             for name, f, t in uc_dicts.tie
         )
@@ -117,6 +129,7 @@ def _set_object_function(m, uc_data, uc_dicts):
                 uc_dicts.p_tie_gf_lfc_up_f[time, name, f, t]
                 + uc_dicts.p_tie_gf_lfc_up_c[time, name, f, t]
             )
+            * tsg_ratio
             for time in uc_dicts.timeline
             for name, f, t in uc_dicts.tie
         )
@@ -127,6 +140,7 @@ def _set_object_function(m, uc_data, uc_dicts):
                 uc_dicts.p_tie_gf_lfc_down_f[time, name, f, t]
                 + uc_dicts.p_tie_gf_lfc_down_c[time, name, f, t]
             )
+            * tsg_ratio
             for time in uc_dicts.timeline
             for name, f, t in uc_dicts.tie
         )
@@ -137,6 +151,7 @@ def _set_object_function(m, uc_data, uc_dicts):
                 uc_dicts.p_tie_tert_up_f[time, name, f, t]
                 + uc_dicts.p_tie_tert_up_c[time, name, f, t]
             )
+            * tsg_ratio
             for time in uc_dicts.timeline
             for name, f, t in uc_dicts.tie
         )
@@ -147,6 +162,7 @@ def _set_object_function(m, uc_data, uc_dicts):
                 uc_dicts.p_tie_tert_down_f[time, name, f, t]
                 + uc_dicts.p_tie_tert_down_c[time, name, f, t]
             )
+            * tsg_ratio
             for time in uc_dicts.timeline
             for name, f, t in uc_dicts.tie
         )

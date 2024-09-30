@@ -5,6 +5,8 @@ Created on Wed Sep  8 23:27:44 2021.
 
 @author: manab
 """
+from decimal import ROUND_HALF_UP, Decimal
+
 import gurobipy as gp
 
 
@@ -36,28 +38,28 @@ def _make_generation_dicts(uc_data, uc_dicts):
         _dict = {}
         for name, g_type, area in uc_dicts.n_and_t_generation:
             _dict[name, g_type, area] = uc_dicts.generation_para["C_fuel"][name, g_type, area] / (
-                1 - uc_dicts.generation_para["IHR"][name, g_type, area] / 100
+                1 - uc_dicts.generation_para["ICR"][name, g_type, area] / 100
             )
         uc_dicts.generation_para["C_coef"] = gp.tupledict(_dict)
 
     if uc_data.config["calculate_P_MAX"]:
-        if "P_MAX" not in uc_dicts.generation_para:
+        if "P_MAX" not in uc_dicts.generation_para.keys():
             uc_dicts.generation_para["P_MAX"] = {}
         for name, g_type, area in uc_dicts.n_and_t_generation:
             uc_dicts.generation_para["P_MAX"][name, g_type, area] = uc_dicts.generation_para[
                 "P_MAX_GENE_END"
             ][name, g_type, area] * (
-                1 - uc_dicts.generation_para["IHR"][name, g_type, area] / 100
+                1 - uc_dicts.generation_para["ICR"][name, g_type, area] / 100
             )
 
     if uc_data.config["calculate_P_MIN"]:
-        if "P_MIN" not in uc_dicts.generation_para:
+        if "P_MIN" not in uc_dicts.generation_para.keys():
             uc_dicts.generation_para["P_MIN"] = {}
         for name, g_type, area in uc_dicts.n_and_t_generation:
             uc_dicts.generation_para["P_MIN"][name, g_type, area] = uc_dicts.generation_para[
                 "P_MIN_GENE_END"
             ][name, g_type, area] * (
-                1 - uc_dicts.generation_para["IHR"][name, g_type, area] / 100
+                1 - uc_dicts.generation_para["ICR"][name, g_type, area] / 100
             )
 
     if uc_data.config["calculate_C_coef_CO2"]:
@@ -123,3 +125,23 @@ def _make_generation_dicts(uc_data, uc_dicts):
                 / uc_dicts.generation_type_para["fuel_price_startup"][g_type]
             )
         uc_dicts.generation_para["C_startup_CO2"] = gp.tupledict(_dict)
+
+    if uc_data.config["calculate_Min_Up_Time"]:
+        tsg_ratio = int(uc_data.config["time_series_granularity"]) / 60
+        for name, g_type, area in uc_dicts.n_and_t_generation:
+            rrt = int(
+                Decimal(
+                    uc_dicts.generation_para["Min_Up_Time"][name, g_type, area] / tsg_ratio
+                ).quantize(Decimal("0"), ROUND_HALF_UP)
+            )
+            uc_dicts.generation_para["Min_Up_Time"][name, g_type, area] = 1 if rrt == 0 else rrt
+
+    if uc_data.config["calculate_Min_Down_Time"]:
+        tsg_ratio = int(uc_data.config["time_series_granularity"]) / 60
+        for name, g_type, area in uc_dicts.n_and_t_generation:
+            rst = int(
+                Decimal(
+                    uc_dicts.generation_para["Min_Down_Time"][name, g_type, area] / tsg_ratio
+                ).quantize(Decimal("0"), ROUND_HALF_UP)
+            )
+            uc_dicts.generation_para["Min_Down_Time"][name, g_type, area] = 1 if rst == 0 else rst
