@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ucgrb"
-version = "6.0.0"
+version = "5.0.0"
 description = "Unit Commitment (UC) optimization for multi-area power systems connected by tie lines using Gurobi Optimizer."
 authors = ["YamaLabTUS"]
 license = "MIT"
