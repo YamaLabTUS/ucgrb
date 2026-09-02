@@ -1,18 +1,23 @@
-## Execution methods - If you have a user license Gurobi Optimizer -
+## Execution methods - If you have a Gurobi Optimizer license -
 
 ## 1. Execution check
 
 If not otherwise specified, optimization is performed under the following conditions.
 
-- Input data ["data-example"](../../data_set/data-example): this is a small-scale power system data for execution check. Power system data: Small-scale system data  for execution check.
+- Input data ["data-example"](../../data_set/data-example): this is a small-scale power system data for execution check.
 - Target Period (delivery date): April 1, 2016 only
 
 The procedure is as follows:
 
-1. Clone this registry.
+1. Clone this repository.
 
+     ```cmd
+     git clone https://github.com/YamaLabTUS/ucgrb.git
+     ```
 
-2. Write the following script in the file "main.py" and save in the same directory as this registry.
+     **Reference: [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)**
+
+2. Write the following script in the file "main.py" and save in the same directory as this repository.
 
    ```python:main.py
    from ucgrb.ucgrb import ucgrb
@@ -22,22 +27,33 @@ The procedure is as follows:
 
    <img src="../img/03/directories_1.png" width="300" alt="Construct of directories">
 
-3. Open a console such as PowerShell, go to the registry (ucgrb), and set up the poetry virtual environment
+3. Open a console such as PowerShell, go to the repository (ucgrb), and set up the poetry virtual environment
 
-  ```cmd
-  cd ucgrb
-  poetry install
-  ```
+```cmd
+cd ucgrb
+poetry install
+```
 
 4. Run "main.py" on the virtual environment. There are mainly two methods.
 
-   - Start VScode or spyder, open "main.py" and execute it.
+- Start VScode or spyder, open "main.py" and execute it.
 
-   - Open the console, change the working directory to the location where main.py is located using cd command, and execute the following command:
+- Activate the poetry virtual environment, change the working directory to the location where main.py is located using cd command, and run `python main.py`. In PowerShell, you can execute it with the following input:
 
-     ```cmd
-     python main.py
-     ```
+  ```cmd
+  $envPath = poetry env info --path
+  & "$envPath\Scripts\Activate.ps1"
+  cd ../
+  python main.py
+  ```
+
+- On macOS (Terminal), you can execute it with the following input:
+
+  ```bash
+  source $(poetry env info --path)/bin/activate
+  cd ../
+  python main.py
+  ```
 
 5. The directory "result" is created in the root directory of this repository, and the execution information file "info.txt" and result files (xlsx, json.zip) are output in the result directory.
 
@@ -45,7 +61,7 @@ The procedure is as follows:
 
 Put a file "config.yml" for your configuration, a directory "data" containing the power system data (in CSV file), and a file "main.py" in the same directory as the below figure, then execute "main.py."
 
-For example, to implement the day-ahead and real-time schedule for April 1, 2016, and the day-ahead plan for April 2, 2016, describe the config.yml as follows.
+For example, to implement the day-ahead and intra-day scheduling for April 1, 2016, and the day-ahead plan for April 2, 2016, describe the config.yml as follows.
 
 ```yml
 start_date: "2016-04-01"

@@ -2,13 +2,13 @@
 
 ## Features as Unit Commitment (UC)
 
-- Conduct day-ahead scheduling and intra-day scheduling in succession so that the UC of the target period (delivery date) is fixed for the power systems in multiple areas connected by tie lines.
+- This program conducts day-ahead scheduling and intra-day scheduling in succession so that the UC of the target period (delivery date) is fixed for the power systems in multiple areas connected by tie lines.
 
   <img src="./img/01/multi-area-power-system.png" alt="multi area power system" width=700px>
 
 - The UC of this program is formulated in Mixed-integer linear programming (MILP). The detailed formulation can be found in Chapter 4 of the README ["Formulation of the optimization problem"](../README_EN.md#table-of-contents).
 
-  - The objective function of the optimization is total cost minimization for all areas in the operation schedule.
+  - The objective function of the optimization is the minimization of the total social procurement cost across all areas in the operation schedule.
 
   - The decision variable is the operational plan for each component of the power system.
 
@@ -32,6 +32,19 @@
 - Rolling Optimization is achieved by inheriting some of the variables determined in the previous optimization to the pre-optimization target period.
 
   ![Rolling optimization image](./img/01/rolling-opt.png)
+
+## How the tertiary reserve is considered
+
+The method for considering tertiary reserve, which is used to cope with forecast errors of renewable energy output, can be selected from the following two by the flag [`formulation_type`](06_config/03_unit_commitment.md#formulation_type).
+
+- **ΔkW no-market type `delta-kW-no-market` (default)**: the tertiary reserve is secured only as the required reserve quantity, and no reserve procurement cost is counted in the objective function. This is exactly the same as the behavior before this flag was introduced (backward compatible).
+- **ΔkW bid type `delta-kW-bid`**: the trading of tertiary reserve in the balancing market is considered, and its value is reflected in the objective function and the constraints as **ΔkW (kW value) in day-ahead scheduling** and **kWh (energy value) in intra-day scheduling**.
+
+With the ΔkW bid type, an **economic evaluation that includes the procurement cost of tertiary reserve**—which the ΔkW no-market type cannot represent—becomes possible, and more realistic UC schedules consistent with the balancing-market design. The figure below shows the difference between the two.
+
+![Difference in tertiary reserve handling by formulation_type](./img/01/delta_kw.png)
+
+For details, see: [Configuration value (`formulation_type`)](06_config/03_unit_commitment.md#formulation_type) / [Objective function formulation](04_formulation/01_objective_function.md) / [Inheritance from day-ahead to intra-day planning](04_formulation/02_constraint/06_inheritance.md)
 
 ## Features as simulation tool
 

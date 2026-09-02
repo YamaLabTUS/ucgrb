@@ -37,7 +37,11 @@ def _make_info_file(uc_data, config_file_path, setting, sw):
         server_name = socket.gethostname()
         info.write("Server name: " + server_name + "\n")
         # IP address ... IPアドレス
-        ip = socket.gethostbyname(server_name)
+        try:
+            ip = socket.gethostbyname(server_name)
+        except (socket.gaierror, socket.herror, OSError):
+            # ホスト名解決に失敗した場合はデフォルト値を使用
+            ip = "unknown"
         info.write("IP address: " + ip + "\n")
         # Start time ... 開始時間
         start_time = datetime.fromtimestamp(sw.get_lap_time(0), timezone(timedelta(hours=9)))

@@ -99,6 +99,11 @@ def _add_scheduling_setting(uc_data, day: date, kind: str):
     # pickup_end_time_in_result_file
     uc_data.config["rolling_opt_list"][-1]["pickup_end_time_in_result_file"] = _end_time
 
+    # optimization_timing（計画の時間軸: 前日計画'day-ahead' / 当日計画'intra-day'）
+    # ΔkW価値考慮版（formulation_type == "delta-kW-bid"）でこの時間軸により定式化を分岐する。
+    # 旧名 'kind_of_formulation' は恒久エイリアスとして許容（_normalize_optimization_timing 参照）。
+    uc_data.config["rolling_opt_list"][-1]["optimization_timing"] = kind
+
     # fix_tie_margin_to_zero
     if kind == "intra-day" and uc_data.config["consider_tie_margin_in_intra-day"] is False:
         uc_data.config["rolling_opt_list"][-1]["fix_tie_margin_to_zero"] = True

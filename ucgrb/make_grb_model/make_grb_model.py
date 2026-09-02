@@ -89,3 +89,7 @@ def _set_options(m, uc_data, uc_dicts):
         m.Params.IntegralityFocus = uc_data.config["grb_IntegralityFocus"]
     if "grb_FeasibilityTol" in uc_data.config:
         m.Params.FeasibilityTol = uc_data.config["grb_FeasibilityTol"]
+    if "grb_NodefileStart" in uc_data.config:
+        m.Params.NodefileStart = uc_data.config["grb_NodefileStart"]
+    if "grb_Threads" in uc_data.config:
+        m.Params.Threads = uc_data.config["grb_Threads"]

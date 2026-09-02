@@ -1,8 +1,8 @@
-# Sets and indies
+# Sets and indices
 
 $$
 \begin{array}{ll}
-      t \in T=\{ 1, 2, ... , end-1, end \}
+      t \in T=\\{ 1, 2, ... , end-1, end \\}
        & : \text{Optimization target period}
       \\
       t \in T_{g}^{\text{Planned Outage}} \\;\\;\\;\\; \forall g \in G_{N\\&T}
@@ -21,7 +21,7 @@ $$
        \\
        & \\; \\; \text{ for output of large-scale power generations and storage capacity of ESS}
       \\
-      t \in T^{\text{INHE,A}}
+      t \in T^{\text{INHE,B}}
        & : \text{Variable inheritance period from previous optimization}
        \\
        & \\; \\; \text{ for binary variables related to the operating conditions of nuclear and thermal power generation}
@@ -29,7 +29,7 @@ $$
       a \in A
        & : \text{Areas}
       \\
-      g \in G=\{ G_{N\\&T} \cup G_{HYDRO} \}
+      g \in G=\\{ G_{N\\&T} \cup G_{HYDRO} \\}
        & : \text{Large-scale power generations}
       \\
       g \in G_{N\\&T}

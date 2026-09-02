@@ -79,9 +79,45 @@ def _make_object_function_chart(
     for series in chart.series:
         m = SHEETRANGE_RE.match(series.tx.strRef.f)
         label = ws[m.group("cells")]._value
+        if label is None:
+            # 値の無い系列ラベル（空セル）はスキップ
+            continue
         if label in graphical_prop["bar"].keys():
             props = graphical_prop["bar"][label]
             _make_spPr_from_dict(series, props)
+        else:
+            # Tertiary Reserve Costの内訳表示に対応
+            # パターン: "Tertiary Reserve Cost (Up) [ΔkW] (g_type)" または "Tertiary Reserve Cost (Down) [ΔkW] (g_type)"
+            # または "Tertiary Reserve Cost (Up) [ΔkW] (ESS: name)" または "Tertiary Reserve Cost (Down) [ΔkW] (ESS: name)"
+            import re
+
+            match = re.match(r"Tertiary Reserve Cost \((Up|Down)\) \[ΔkW\] \((.+)\)", label)
+            if match:
+                direction = match.group(1)
+                entity = match.group(2)
+                # 発電機種類の場合
+                if entity in graphical_prop["bar"].keys() and entity in [
+                    "NUCL",
+                    "COAL",
+                    "GAS",
+                    "OIL",
+                    "HYDRO",
+                ]:
+                    # 発電機種類の色定義を再利用（少し明るくする）
+                    base_props = graphical_prop["bar"][entity].copy()
+                    props = base_props
+                    _make_spPr_from_dict(series, props)
+                # ESSの場合
+                elif entity.startswith("ESS: "):
+                    ess_name = entity.replace("ESS: ", "")
+                    # ESS Short Penaltyの色定義を再利用
+                    if "ESS Short Penalty" in graphical_prop["bar"].keys():
+                        props = graphical_prop["bar"]["ESS Short Penalty"].copy()
+                        _make_spPr_from_dict(series, props)
+                # その他の場合、Coefの色定義を再利用
+                elif "Coef (" + entity + ")" in graphical_prop["bar"].keys():
+                    props = graphical_prop["bar"]["Coef (" + entity + ")"].copy()
+                    _make_spPr_from_dict(series, props)
 
     chart.height = 13.5 * size
     chart.width = 24 * size
@@ -108,9 +144,41 @@ def _make_object_function_chart(
     slices = [DataPoint(idx=i) for i in range(len_elements)]
     for i in range(len_elements):
         label = ws.cell(row=start_row, column=start_col + 1 + i).value
+        if label is None:
+            # 値の無い系列ラベル（空セル）はスキップ
+            continue
         if label in graphical_prop["bar"].keys():
             props = graphical_prop["bar"][label]
             _make_spPr_from_dict(slices[i], props)
+        else:
+            # Tertiary Reserve Costの内訳表示に対応
+            import re
+
+            match = re.match(r"Tertiary Reserve Cost \((Up|Down)\) \[ΔkW\] \((.+)\)", label)
+            if match:
+                direction = match.group(1)
+                entity = match.group(2)
+                # 発電機種類の場合
+                if entity in graphical_prop["bar"].keys() and entity in [
+                    "NUCL",
+                    "COAL",
+                    "GAS",
+                    "OIL",
+                    "HYDRO",
+                ]:
+                    base_props = graphical_prop["bar"][entity].copy()
+                    props = base_props
+                    _make_spPr_from_dict(slices[i], props)
+                # ESSの場合
+                elif entity.startswith("ESS: "):
+                    ess_name = entity.replace("ESS: ", "")
+                    if "ESS Short Penalty" in graphical_prop["bar"].keys():
+                        props = graphical_prop["bar"]["ESS Short Penalty"].copy()
+                        _make_spPr_from_dict(slices[i], props)
+                # その他の場合、Coefの色定義を再利用
+                elif "Coef (" + entity + ")" in graphical_prop["bar"].keys():
+                    props = graphical_prop["bar"]["Coef (" + entity + ")"].copy()
+                    _make_spPr_from_dict(slices[i], props)
     chart_p.series[0].data_points = slices
 
     chart_p.height = 13.5 * size

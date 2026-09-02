@@ -39,3 +39,14 @@ def _set_object_functions(uc_data):
         uc_data.config["set_C_tie_penalty_Tert_UP_on_objective_function"] = True
     if "set_C_tie_penalty_Tert_DOWN_on_objective_function" not in uc_data.config:
         uc_data.config["set_C_tie_penalty_Tert_DOWN_on_objective_function"] = True
+    # ΔkW価値考慮版の調整力調達費フラグは formulation_type == "delta-kW-bid" のときのみ定義
+    # （delta-kW-no-market では一切加算しない。develop 後方互換）
+    if uc_data.config.get("formulation_type") == "delta-kW-bid":
+        if "set_C_delta_kW_tert_on_objective_function" not in uc_data.config:
+            uc_data.config["set_C_delta_kW_tert_on_objective_function"] = True
+        if "set_C_id_on_objective_function" not in uc_data.config:
+            uc_data.config["set_C_id_on_objective_function"] = True
+        if "set_C_ess_delta_kW_tert_on_objective_function" not in uc_data.config:
+            uc_data.config["set_C_ess_delta_kW_tert_on_objective_function"] = True
+        if "set_C_ess_id_on_objective_function" not in uc_data.config:
+            uc_data.config["set_C_ess_id_on_objective_function"] = True

@@ -37,4 +37,23 @@ def _fix_variables(m, uc_data, uc_dicts, uc_vars):
                 _e_ess = uc_vars.e_ess[time, name, area]
                 uc_dicts.e_ess[time, name, area].setAttr("lb", _e_ess)
                 uc_dicts.e_ess[time, name, area].setAttr("ub", _e_ess)
+
+    # p_ess_d, p_ess_c (ESSの発電量・充電量) — ΔkW価値考慮版でのみ固定
+    # （delta-kW-no-market では uc_vars.p_ess_d/c が保存されないため、この分岐には入らない）
+    if (
+        uc_data.config.get("formulation_type") == "delta-kW-bid"
+        and hasattr(uc_vars, "p_ess_d")
+        and hasattr(uc_vars, "p_ess_c")
+    ):
+        for time in uc_vars.T_INHE_A:
+            for name, area in uc_dicts.ess:
+                _key = (time, name, area)
+                if _key in uc_vars.p_ess_d:
+                    _p_ess_d = uc_vars.p_ess_d[_key]
+                    uc_dicts.p_ess_d[_key].setAttr("lb", _p_ess_d)
+                    uc_dicts.p_ess_d[_key].setAttr("ub", _p_ess_d)
+                if _key in uc_vars.p_ess_c:
+                    _p_ess_c = uc_vars.p_ess_c[_key]
+                    uc_dicts.p_ess_c[_key].setAttr("lb", _p_ess_c)
+                    uc_dicts.p_ess_c[_key].setAttr("ub", _p_ess_c)
     m.update()

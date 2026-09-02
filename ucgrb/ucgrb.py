@@ -48,23 +48,35 @@ def ucgrb(config_path="config.yml"):
         uc_dicts.apply_opt_setting(uc_data, i)
         sw.lap(_name + " 辞書型データへ最適化設定を反映")
 
+        # 前日計画から当日計画への引き継ぎ変数の固定（ΔkW価値考慮版のみ。delta-kW-no-market では no-op）
+        uc_vars.fix_day_ahead_vars_for_intra_day(uc_data, uc_dicts, i)
+        sw.lap(_name + " 前日計画から当日計画への引き継ぎ変数の固定")
+
         # Gurobiモデルの作成
         uc_model = make_grb_model(uc_data, uc_dicts, i)
         sw.lap(_name + " Gurobiモデルの作成")
 
         # 最適化対象期間前の決定変数固定
-        uc_vars.fix_variables(uc_model, uc_data, uc_dicts)
+        uc_vars.fix_variables(uc_model, uc_data, uc_dicts, i)
         sw.lap(_name + " 最適化対象期間前の決定変数固定")
 
         # 最適化の実施
         uc_model.optimize()
         sw.lap(_name + " 最適化の実施")
 
-        # INFEASIBLEとなった場合、原因を確認するため、ISS（Irreducible Inconsistent Subsystem）を計算。
-        # 矛盾する制約条件を特定、ファイルに出力
-        if uc_model.Status == gp.GRB.INFEASIBLE:
-            uc_model.computeIIS()
-            uc_model.write("ISS_that_caused_the_INFEASIBLE.ilp")
+        # Optimal でない場合、原因を確認するため診断情報を出力。
+        # INFEASIBLE/UNBOUNDED 系は IIS（Irreducible Inconsistent Subsystem）を計算。
+        if uc_model.Status != gp.GRB.OPTIMAL:
+            if uc_model.Status in (
+                gp.GRB.INFEASIBLE,
+                gp.GRB.UNBOUNDED,
+                gp.GRB.INF_OR_UNBD,
+            ):
+                uc_model.computeIIS()
+                uc_model.write("ISS_that_caused_the_INFEASIBLE.ilp")
+            else:
+                # INFEASIBLE 以外の非 Optimal も診断情報を出力（status コードをファイル名に付与）
+                uc_model.write(f"diagnosis_status_{uc_model.Status}.log")
 
         # 結果の出力
         output_result(uc_model, uc_data, uc_dicts, i)

@@ -2,7 +2,7 @@
 
 If you do not have a paid license for Gurobi Optimizer but still want to solve a large problem, you can output the MILP problem to an MPS file and solve it with another solver.
 
-As an example, the procedure is shown for the Python package [PuLP](https://pypi.org/project/PuLP/) and the open source [MILP](https://github.com/coin-or/Cbc) solver CBC.
+As an example, the procedure is shown for the Python package [PuLP](https://pypi.org/project/PuLP/) and the open source MILP solver [CBC](https://github.com/coin-or/Cbc).
 
 1. Set `export_mps_file: True` in the configuration file to output MPS files. See [Execution methods - If you have a Gurobi Optimizer license -](../03_01_run_with_licence/01_run.md) and [Setting file examples Example 11: MPS file output](../03_01_run_with_licence/02_example.md#example-11-mps-file-output),
 
@@ -24,7 +24,9 @@ As an example, the procedure is shown for the Python package [PuLP](https://pypi
 
    - CBC Releases archived at: https://github.com/coin-or/Cbc/releases
 
-   - In this example, the file is saved in "C:\Program Files\cbc".
+   - On Windows, in this example, the file is saved in "C:\Program Files\cbc".
+
+   - On macOS, you can install CBC using Homebrew: `brew install cbc`
 
 6. Unzip the mps.zip file whose existence was confirmed in step 3, convert it to an MPS file, and save it in a specific directory.
 
@@ -41,7 +43,11 @@ As an example, the procedure is shown for the Python package [PuLP](https://pypi
    MPS_PATH = "2016-04-01_scheduling.mps"
 
    # CBC Solver Path
+   # On Windows:
    CBC_PATH = r"C:\Program Files\cbc\bin\cbc.exe"
+   # On macOS (if installed via Homebrew):
+   # CBC_PATH = "/opt/homebrew/bin/cbc"  # Apple Silicon
+   # CBC_PATH = "/usr/local/bin/cbc"     # Intel Mac
 
    # Defining the Problem with PuLP
    var, prob = pulp.LpProblem.fromMPS(MPS_PATH)

@@ -5,6 +5,8 @@
 Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以下UC）最適化を実施するためのPythonパッケージ。
 連系線で接続された複数地域の電力系統を対象としたUC最適化を実施することができる。
 
+- **v7では、v5で用いていた入力ファイルを修正せずにそのまま利用できる（後方互換）。ΔkW価値考慮版（`formulation_type: "delta-kW-bid"`）を利用する場合のみ項目の追加が必要となる。「[v5からv7への移行（入力ファイルの変更方法）](docs/08_migration/02_v5_to_v7.md)」にその手順を示す。**
+
 
 ## 目次
 
@@ -29,14 +31,14 @@ Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以�
    3. [集合と添字](docs/04_formulation/03_set_and_index.md)
    4. 定数
       1. [地域に関する定数](docs/04_formulation/04_parameter/01_area.md)
-      2. [大規模発電機に関する定数](docs/04_formulation/04_parameter/02_generator.md)
+      2. [大規模発電機に関する定数](docs/04_formulation/04_parameter/02_generation.md)
       3. [再生可能エネルギーに関する定数](docs/04_formulation/04_parameter/03_re.md)
       4. [エネルギー貯蔵システム（ESS）に関する定数](docs/04_formulation/04_parameter/04_ess.md)
       5. [連系線に関する定数](docs/04_formulation/04_parameter/05_tie.md)
       6. [計画種に依存する定数](docs/04_formulation/04_parameter/06_depend_on_scheduling_kind.md)
    5. 決定変数
       1. [地域に関する決定変数](docs/04_formulation/05_variable/01_area.md)
-      2. [大規模発電機に関する決定変数](docs/04_formulation/05_variable/02_geneation.md)
+      2. [大規模発電機に関する決定変数](docs/04_formulation/05_variable/02_generation.md)
       3. [再生可能エネルギーに関する決定変数](docs/04_formulation/05_variable/03_re.md)
       4. [エネルギー貯蔵システム（ESS）に関する決定変数](docs/04_formulation/05_variable/04_ess.md)
       5. [連系線に関する決定変数](docs/04_formulation/05_variable/05_tie.md)
@@ -44,7 +46,7 @@ Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以�
       1. [原子力・火力発電機の燃料費関数出力比例係数算出方法](docs/04_formulation/06_appendix/01_fuel_cost.md)
       2. [原子力・火力発電機の最大出力・最小出力算出方法](docs/04_formulation/06_appendix/02_max_min_output.md)
       3. [大規模発電機のCO<sub>2</sub>排出量算出方法](docs/04_formulation/06_appendix/03_emission.md)
-      4. [時間粒度の変更による定式内容の変化](docs/04_formulation/06_appendix/04_time_series_granularity.md)
+      4. [時間粒度の変更による定式内容の変化](docs/04_formulation/06_appendix/04_time_granularity.md)
 5. 電力系統データCSVファイルの記述方法
    1. [概要](docs/05_csvfile/01_about.md)
    2. [発電機データ](docs/05_csvfile/02_generation.md)
@@ -58,9 +60,18 @@ Gurobi Optimizerを用いた発電機起動停止計画（Unit Commitment: 以�
    4. [ローリング最適化リスト設定](docs/06_config/04_rolling_optimization_list.md)
    5. [結果出力設定](docs/06_config/05_result_output.md)
 7. 開発者に向けて
-   1. [開発者向け設定値](docs/07_for_developer/01_config_setting.md)
+   1. 開発者向け設定値
+      1. [目次](docs/07_for_developer/01_config_setting/01_index.md)
+      2. [辞書型データ作成のオプション設定](docs/07_for_developer/01_config_setting/02_dicts.md)
+      3. [決定変数のオプション設定](docs/07_for_developer/01_config_setting/03_variables.md)
+      4. [目的関数のオプション設定](docs/07_for_developer/01_config_setting/04_objective.md)
+      5. [制約式のオプション設定](docs/07_for_developer/01_config_setting/05_constraints.md)
+      6. [決定変数の引継ぎのオプション設定](docs/07_for_developer/01_config_setting/06_inheritance.md)
    2. [自動整形に関して](docs/07_for_developer/02_formatter.md)
-8. [v3で用いていた電力系統データCSVファイルからの変更方法](docs/08_how_to_modify_csvfile.md)
+   3. [テスト実行方法](docs/07_for_developer/03_testing.md)
+8. 旧バージョンからの移行方法
+   1. [目次](docs/08_migration/01_index.md)
+   2. [v5からv7への移行（入力ファイルの変更方法）](docs/08_migration/02_v5_to_v7.md)
 
 
 ## ライセンス

@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+WF グラフ生成モジュール.
+
+各地域のWF出力時系列を示すグラフを作成する。
+"""
+from .._append_col import _append_col
+from .._make_constraint_chart import _make_constraint_chart
+
+
+def make_wf_graph(ws, period_name, timeline, time_format, area, m, uc_data, uc_dicts):
+    """
+    各地域のWF出力時系列グラフを作成する.
+
+    Parameters
+    ----------
+    ws : CLASS
+        結果を出力するシートのインスタンス
+    period_name : STR
+        表示対象の期間名称
+    timeline : dataframe
+        時系列
+    time_format : STR
+        時系列表示フォーマット
+    area : STR
+        対象地域名
+    m : CLASS
+        Gurobiモデル
+    uc_data : CLASS
+        クラス「UCData」のインスタンス
+    uc_dicts : CLASS
+        クラス「UCDicts」のインスタンス
+
+    """
+    # WF出力時系列
+    _header_col = ["WF"] + list(timeline.keys().strftime(time_format))
+    _append_col(ws, _header_col)
+    _start_col = ws.max_column
+
+    _value_col = ["_TRANSPARENT"]
+    for time in timeline:
+        _value = (
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+            - uc_dicts.p_wf_tert_down[time, area].X
+            - uc_dicts.p_wf_gf_lfc_down[time, area].X
+        )
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _value_col = ["Tertiary (Down)"]
+    for time in timeline:
+        _value = uc_dicts.p_wf_tert_down[time, area].X
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _value_col = ["GF&LFC (Down)"]
+    for time in timeline:
+        _value = uc_dicts.p_wf_gf_lfc_down[time, area].X
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _value_col = ["GF&LFC (Up)"]
+    for time in timeline:
+        _value = uc_dicts.p_wf_gf_lfc_up[time, area].X
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _value_col = ["Tertiary (Up)"]
+    for time in timeline:
+        _value = uc_dicts.p_wf_tert_up[time, area].X
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _value_col = ["WF Net"]
+    for time in timeline:
+        _value = (
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+        )
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _value_col = ["WF Output"]
+    for time in timeline:
+        _value = uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _value_col = ["Reserve limit (Up)"]
+    for time in timeline:
+        _value = uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+        _value -= uc_dicts.p_wf_suppr[time, area].X * (
+            1 - uc_dicts.area_para["R_WF_res_UP"][area] / 100
+        )
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _value_col = ["Reserve limit (Down)"]
+    for time in timeline:
+        _value = (
+            uc_dicts.area_para["WF_cap"][area] * uc_dicts.wf_para["output"][time, area]
+            - uc_dicts.p_wf_suppr[time, area].X
+        ) * (1 - uc_dicts.area_para["R_WF_res_DOWN"][area] / 100)
+        _value_col.append(_value)
+    _append_col(ws, _value_col)
+
+    _make_constraint_chart(
+        ws,
+        "WF in " + area + " on " + period_name,
+        place_row=2,
+        place_col=ws.max_column + 4,
+        start_row=1,
+        start_col=_start_col,
+        len_timeline=len(timeline),
+        len_bargraph=5,
+        len_linegraph=4,
+        graphical_prop=uc_data.config["graphical_prop_for_xlsx_graph"],
+    )
+
+    ws.cell(column=ws.max_column + 1, row=1, value=" ")
+    ws.insert_cols(ws.max_column, 12)

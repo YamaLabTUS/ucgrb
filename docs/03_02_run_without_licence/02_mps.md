@@ -4,7 +4,7 @@ Gurobi Optimizerの有償版ライセンスがない場合でも大規模問題�
 
 実施例として、Python パッケージ [PuLP](https://pypi.org/project/PuLP/)とオープンソースMILPソルバー [CBC](https://github.com/coin-or/Cbc) を用いた場合の手順を示す。
 
-1. [実行方法 - Gurobi Optimizer有償版ライセンスがある場合 -](../03_01_run_with_licence/01_run.md)や[設定ファイル記述例 例11: MPSファイルの出力](../run_with_licence/example.md#例11:-MPSファイルの出力)を参考に、設定ファイルに`export_mps_file: True`を記載して、MPSファイルを出力するように設定する。
+1. [実行方法 - Gurobi Optimizer有償版ライセンスがある場合 -](../03_01_run_with_licence/01_run.md)や[設定ファイル記述例 例11: MPSファイルの出力](../03_01_run_with_licence/02_example.md#例11-mpsファイルの出力)を参考に、設定ファイルに`export_mps_file: True`を記載して、MPSファイルを出力するように設定する。
 
 2. ucgrbを実施する。有償版ライセンスがない場合、以下のようなエラーが出力される。
 
@@ -16,7 +16,7 @@ Gurobi Optimizerの有償版ライセンスがない場合でも大規模問題�
 
    - 最適化はライセンスがないことによるエラーによって実施されないため、ローリング最適化の最初に実施される予定だった最適化問題のみmps.zipファイルとして保存される。
 
-   - [設定ファイル記述例 例11: MPSファイルの出力](../run_with_licence/example.md#例11: MPSファイルの出力)の設定ファイルで実施した場合、2016年4月1日前日計画最適化問題が「2016-04-01_day-ahead_scheduling.mps.zip」というファイル名で出力される。
+   - [設定ファイル記述例 例11: MPSファイルの出力](../03_01_run_with_licence/02_example.md#例11-mpsファイルの出力)の設定ファイルで実施した場合、2016年4月1日前日計画最適化問題が「2016-04-01_day-ahead_scheduling.mps.zip」というファイル名で出力される。
 
 4. PuLPがインストールされた仮想環境(pyenv)を作成する。
 
@@ -24,7 +24,9 @@ Gurobi Optimizerの有償版ライセンスがない場合でも大規模問題�
 
    - CBCリリース保存場所: https://github.com/coin-or/Cbc/releases
 
-   - 本例では、「C:\Program Files\cbc」に保存する。
+   - Windowsの場合、本例では「C:\Program Files\cbc」に保存する。
+
+   - macOSの場合、Homebrewでインストール可能である: `brew install cbc`
 
 6. 手順3で存在を確認したmps.zipファイルを解凍してMPSファイルに変換し、特定のディレクトリに保存する。
 
@@ -41,7 +43,11 @@ Gurobi Optimizerの有償版ライセンスがない場合でも大規模問題�
    MPS_PATH = "2016-04-01_scheduling.mps"
 
    # CBCソルバーのパス
+   # Windowsの場合:
    CBC_PATH = r"C:\Program Files\cbc\bin\cbc.exe"
+   # macOSの場合（Homebrewでインストールした場合）:
+   # CBC_PATH = "/opt/homebrew/bin/cbc"  # Apple Silicon
+   # CBC_PATH = "/usr/local/bin/cbc"     # Intel Mac
 
    # PuLPによる問題の定義
    var, prob = pulp.LpProblem.fromMPS(MPS_PATH)

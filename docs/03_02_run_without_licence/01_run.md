@@ -13,6 +13,10 @@ Gurobi Optimizerの有償版ライセンスを保有していない場合、制�
 
 1. 本レジストリをクローンする。
 
+    ```cmd
+    git clone https://github.com/YamaLabTUS/ucgrb.git
+    ```
+    参考URL: [https://git-scm.com/book/ja/v2/Git-の基本-Git-リポジトリの取得](https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E5%9F%BA%E6%9C%AC-Git-%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AE%E5%8F%96%E5%BE%97)
 
 2. 本レジストリと同一ディレクトリ内に以下のスクリプト「main.py」と設定ファイル「config.yml」を作成する。
 
@@ -55,13 +59,20 @@ Gurobi Optimizerの有償版ライセンスを保有していない場合、制�
 
 4. 仮想環境上で「main.py」を実行する。主に以下の2つの方法がある。
 
-   - poetryの仮想環境シェルに入って、main.pyがある場所にcdコマンドで移動し、`python main.py`を実行する。
+  - poetryの仮想環境をアクティベート（有効化）し、main.pyがある場所にcdコマンドで移動し、`python main.py`を実行する。PowerShellでは以下の入力で実行することができる。
+    ```cmd
+    $envPath = poetry env info --path | & "$envPath\Scripts\Activate.ps1"
+    cd ../
+    python main.py
+    ```
 
-     ```cmd
-     poetry shell
-     cd ../
-     python main.py
-     ```
+  - macOS（Terminal）では以下の入力で実行することができる。
+    ```bash
+    source $(poetry env info --path)/bin/activate
+    cd ../
+    python main.py
+    ```
+
   - VScodeやspyderを起動して、インターポレーターをpoetryの仮想環境に指定したのち、「main.py」を開き、実行する。
 
 5. 本レポジトリのルートディレクトリの中にディレクトリ「result」が生成され、その中に、実行情報ファイル「info.txt」と結果ファイル（xlsx、json.zip）が出力される

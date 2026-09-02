@@ -26,11 +26,24 @@ def _set_output_results(uc_data):
         uc_data.config["export_mps_file"] = False
     if "export_json_file" not in uc_data.config:
         uc_data.config["export_json_file"] = True
-    if "export_xlsx_file" not in uc_data.config or uc_data.config["export_xlsx_file"] is True:
+    if "export_xlsx_file" not in uc_data.config:
         uc_data.config["export_xlsx_file"] = DEFAULT_EXPORT_XLSX_FILE
-    for key, value in DEFAULT_EXPORT_XLSX_FILE.items():
-        if key not in uc_data.config["export_xlsx_file"]:
-            uc_data.config["export_xlsx_file"][key] = value
+    elif isinstance(uc_data.config["export_xlsx_file"], bool):
+        if uc_data.config["export_xlsx_file"] is True:
+            uc_data.config["export_xlsx_file"] = DEFAULT_EXPORT_XLSX_FILE
+        # Falseの場合はFalseのまま保持
+    elif isinstance(uc_data.config["export_xlsx_file"], dict):
+        # 辞書の場合は既存の処理を継続
+        pass
+    else:
+        # その他の場合はデフォルト値を使用
+        uc_data.config["export_xlsx_file"] = DEFAULT_EXPORT_XLSX_FILE
+
+    # 辞書の場合のみキーの存在確認とデフォルト値の設定を行う
+    if isinstance(uc_data.config["export_xlsx_file"], dict):
+        for key, value in DEFAULT_EXPORT_XLSX_FILE.items():
+            if key not in uc_data.config["export_xlsx_file"]:
+                uc_data.config["export_xlsx_file"][key] = value
 
     if "graphical_prop_for_xlsx_graph" not in uc_data.config:
         uc_data.config["graphical_prop_for_xlsx_graph"] = DEFAULT_GRAPHICAL_PROP_FOR_XLSX_GRAPH

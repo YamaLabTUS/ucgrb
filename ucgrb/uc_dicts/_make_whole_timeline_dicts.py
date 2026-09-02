@@ -16,34 +16,50 @@ def _make_whole_timeline_dicts(uc_data, uc_dicts):
 
     最適化対象前期間も含めた'whole_timeline_w_pre_period'も同時に作成する.
     """
-    if uc_data.config["make_whole_timeline_dicts"] is False:
-        return
+    try:
+        if uc_data.config["make_whole_timeline_dicts"] is False:
+            return
 
-    _fmt = "%Y-%m-%dT%H-%M-%S"
+        _fmt = "%Y-%m-%dT%H-%M-%S"
 
-    # 'whole_timeline'の作成
-    _s = uc_data.config["rolling_opt_list"][0]["start_time"]
-    _e = uc_data.config["rolling_opt_list"][-1]["end_time"]
-    _f = str(uc_data.config["time_series_granularity"]) + "min"
-    _df = pd.date_range(_s, _e, freq=_f).to_series().dt.strftime(_fmt)
-    uc_dicts.whole_timeline = _df
+        # 'whole_timeline'の作成
+        _s = uc_data.config["rolling_opt_list"][0]["start_time"]
+        _e = uc_data.config["rolling_opt_list"][-1]["end_time"]
+        _f = str(uc_data.config["time_series_granularity"]) + "min"
+        _df = pd.date_range(_s, _e, freq=_f).to_series().dt.strftime(_fmt)
+        uc_dicts.whole_timeline = _df
 
-    # 'whole_timeline_w_pre_period'の作成
-    _s_pre = uc_data.config["rolling_opt_list"][0]["start_time"] - timedelta(
-        hours=uc_data.config["rolling_opt_list"][0]["pre_period_hours"]
-    )
-    _e_pre = uc_data.config["rolling_opt_list"][0]["start_time"] - timedelta(
-        minutes=uc_data.config["time_series_granularity"]
-    )
-    _df = pd.date_range(_s_pre, _e_pre, freq=_f).to_series().dt.strftime(_fmt)
-    uc_dicts.whole_timeline_w_pre_period = pd.concat([_df, uc_dicts.whole_timeline])
+        # 'whole_timeline_w_pre_period'の作成
+        _s_pre = uc_data.config["rolling_opt_list"][0]["start_time"] - timedelta(
+            hours=uc_data.config["rolling_opt_list"][0]["pre_period_hours"]
+        )
+        _e_pre = uc_data.config["rolling_opt_list"][0]["start_time"] - timedelta(
+            minutes=uc_data.config["time_series_granularity"]
+        )
+        _df = pd.date_range(_s_pre, _e_pre, freq=_f).to_series().dt.strftime(_fmt)
+        uc_dicts.whole_timeline_w_pre_period = pd.concat([_df, uc_dicts.whole_timeline])
 
-    # 対象日付の確認
-    _days = pd.date_range(_check_day(_s), _check_day(_e), freq="d")
-    uc_dicts.daily_whole_timeline = _days
+        # 対象日付の確認
+        _days = pd.date_range(_check_day(_s), _check_day(_e), freq="d")
+        uc_dicts.daily_whole_timeline = _days
 
-    _days = pd.date_range(_check_day(_s_pre), _check_day(_e), freq="d")
-    uc_dicts.daily_whole_timeline_w_pre_period = _days
+        _days = pd.date_range(_check_day(_s_pre), _check_day(_e), freq="d")
+        uc_dicts.daily_whole_timeline_w_pre_period = _days
+    except Exception as e:
+        print("=" * 80)
+        print("🚨 全体時系列辞書作成エラー 🚨")
+        print("=" * 80)
+        print("🔧 処理中の関数: _make_whole_timeline_dicts")
+        print(f"❌ エラーの種類: {type(e).__name__}")
+        print(f"💬 エラーの詳細: {str(e)}")
+        print("=" * 80)
+        print("🔧 対処方法:")
+        print("   1. 設定ファイルの 'rolling_opt_list' 項目を確認してください")
+        print("   2. 設定ファイルの 'time_series_granularity' 項目を確認してください")
+        print("   3. 設定ファイルの 'make_whole_timeline_dicts' 項目を確認してください")
+        print("   4. 日時形式が正しいか確認してください")
+        print("=" * 80)
+        raise
 
 
 def _check_day(t: datetime) -> date:

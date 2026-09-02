@@ -69,7 +69,7 @@
 本項目を指定しない場合、最適化対象期間前の引き継ぎ期間も含めて、一日の最初の時刻（時間粒度が1時間のときは、1時）とする。
 
 例: 最適化対象期間: 4月30日13時～5月2日0時、最適化対象期間前の引き継ぎ期間:24時間
-→　発電量上限制約の考慮開始時刻 : 4月30日1時
+→ 発電量上限制約の考慮開始時刻 : 4月30日1時
 
 #### pickup_start_time_in_result_file
 
@@ -99,6 +99,18 @@
 
 必要三次調整力を0に固定するか否かを選択する。
 
+#### optimization_timing
+
+- **書式: 文字列（`"day-ahead"` または `"intra-day"`）**
+- **デフォルト値: `"day-ahead"`**
+
+その回の最適化が前日計画（`"day-ahead"`）か当日計画（`"intra-day"`）かを示す、計画の時間軸。
+
+ΔkW価値考慮版（[`formulation_type: "delta-kW-bid"`](03_unit_commitment.md#formulation_type)）では、この値に応じて三次調整力の定式化を切り替える（前日計画は ΔkW価値、当日計画は kWh価値）。`delta-kW-no-market`（既定）では参照されない。
+
+> **旧キー `kind_of_formulation` について（恒久エイリアス）**
+> 本キーは旧版で `kind_of_formulation` という名称だった。`optimization_timing` への改名後も、旧キー `kind_of_formulation` は**恒久的に**許容される（廃止予定なし）。要素に `optimization_timing` が無く `kind_of_formulation` のみが指定されている場合は、自動的に `optimization_timing` として読み替えられる（情報ログのみ。警告は出ない）。両方が指定された場合は `optimization_timing` を優先する。
+
 **記述例: 受渡日2016年5月1日の前日計画、当日計画を連続で実施**
 
 ```yaml
@@ -107,6 +119,7 @@ rolling_opt_list:
     start_time: "2016-04-30 13:00:00"
     end_time: "2016-05-02 00:00:00"
     pre_period_hours: 24
+    optimization_timing: "day-ahead"
     pv_value:
       "2016-04-30 13:00:00": "ACT"
       "2016-05-01 01:00:00": "FCST"
@@ -118,6 +131,7 @@ rolling_opt_list:
     start_time: "2016-05-01 01:00:00"
     end_time: "2016-05-02 0:00:00"
     pre_period_hours: 24
+    optimization_timing: "intra-day"
     pv_value:
       "2016-05-01 01:00:00": "ACT"
     wf_value:
@@ -125,6 +139,8 @@ rolling_opt_list:
     fix_tie_margin_to_zero: True
     fix_required_tertiary_reserve_to_zero: True
 ```
+
+注: `optimization_timing` は `formulation_type: "delta-kW-no-market"` では省略可能（既定 `"day-ahead"`）。自動生成ルール（設定方法2）では各回に自動付与される。
 
 ## 設定方法2 -自動生成-
 

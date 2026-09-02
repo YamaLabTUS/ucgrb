@@ -15,32 +15,51 @@ from numpy import ones
 
 def _make_descent_dicts(uc_data, uc_dicts):
     """出力低下に関するタイムライン"P_des"を作成する."""
-    if uc_data.config["make_descent_dicts"] is False:
-        return
+    try:
+        if uc_data.config["make_descent_dicts"] is False:
+            return
 
-    _td = uc_data.config["time_series_granularity"]
-    _target_period = uc_dicts.whole_timeline_w_pre_period
+        _td = uc_data.config["time_series_granularity"]
+        _target_period = uc_dicts.whole_timeline_w_pre_period
 
-    uc_dicts.P_des = collections.defaultdict(int)
-    uc_dicts.P_d_des = collections.defaultdict(int)
-    uc_dicts.P_c_des = collections.defaultdict(int)
+        uc_dicts.P_des = collections.defaultdict(int)
+        uc_dicts.P_d_des = collections.defaultdict(int)
+        uc_dicts.P_c_des = collections.defaultdict(int)
 
-    if hasattr(uc_data.power_system, "descent"):
-        for des_event in uc_data.power_system.descent.itertuples():
-            if len(uc_dicts.generation.select(des_event.name, "*", "*")) == 1:
-                _P_MAX = uc_dicts.generation_para["P_MAX"].sum(des_event.name, "*", "*")
-                _P_MIN = uc_dicts.generation_para["P_MIN"].sum(des_event.name, "*", "*")
-                _P_range = _P_MAX.getValue() - _P_MIN.getValue()
-                _update_P_des(uc_dicts.P_des, des_event, _P_range, _td, _target_period)
-            elif len(uc_dicts.ess.select(des_event.name, "*")) == 1:
-                _P_d_MAX = uc_dicts.ess_para["P_d_MAX"].sum(des_event.name, "*")
-                _P_d_MIN = uc_dicts.ess_para["P_d_MIN"].sum(des_event.name, "*")
-                _P_d_range = _P_d_MAX.getValue() - _P_d_MIN.getValue()
-                _update_P_des(uc_dicts.P_d_des, des_event, _P_d_range, _td, _target_period)
-                _P_c_MAX = uc_dicts.ess_para["P_c_MAX"].sum(des_event.name, "*")
-                _P_c_MIN = uc_dicts.ess_para["P_c_MIN"].sum(des_event.name, "*")
-                _P_c_range = _P_c_MAX.getValue() - _P_c_MIN.getValue()
-                _update_P_des(uc_dicts.P_c_des, des_event, _P_c_range, _td, _target_period)
+        if hasattr(uc_data.power_system, "descent"):
+            for des_event in uc_data.power_system.descent.itertuples():
+                if len(uc_dicts.generation.select(des_event.name, "*", "*")) == 1:
+                    _P_MAX = uc_dicts.generation_para["P_MAX"].sum(des_event.name, "*", "*")
+                    _P_MIN = uc_dicts.generation_para["P_MIN"].sum(des_event.name, "*", "*")
+                    _P_range = _P_MAX.getValue() - _P_MIN.getValue()
+                    _update_P_des(uc_dicts.P_des, des_event, _P_range, _td, _target_period)
+                elif len(uc_dicts.ess.select(des_event.name, "*")) == 1:
+                    _P_d_MAX = uc_dicts.ess_para["P_d_MAX"].sum(des_event.name, "*")
+                    _P_d_MIN = uc_dicts.ess_para["P_d_MIN"].sum(des_event.name, "*")
+                    _P_d_range = _P_d_MAX.getValue() - _P_d_MIN.getValue()
+                    _update_P_des(uc_dicts.P_d_des, des_event, _P_d_range, _td, _target_period)
+                    _P_c_MAX = uc_dicts.ess_para["P_c_MAX"].sum(des_event.name, "*")
+                    _P_c_MIN = uc_dicts.ess_para["P_c_MIN"].sum(des_event.name, "*")
+                    _P_c_range = _P_c_MAX.getValue() - _P_c_MIN.getValue()
+                    _update_P_des(uc_dicts.P_c_des, des_event, _P_c_range, _td, _target_period)
+    except Exception as e:
+        print("=" * 80)
+        print("🚨 出力低下辞書作成エラー 🚨")
+        print("=" * 80)
+        print("📁 問題のあるCSVファイル: descent.csv")
+        print("🔧 処理中の関数: _make_descent_dicts")
+        print(f"❌ エラーの種類: {type(e).__name__}")
+        print(f"💬 エラーの詳細: {str(e)}")
+        print("=" * 80)
+        print("🔧 対処方法:")
+        print("   1. descent.csvファイルの形式を確認してください")
+        print("   2. 必須列 'name', 'P_des', 'start_time', 'end_time' が存在するか確認してください")
+        print("   3. 数値データの形式が正しいか確認してください")
+        print("   4. 日時形式が正しいか確認してください")
+        print("   5. 設定ファイルの 'make_descent_dicts' 項目を確認してください")
+        print("   6. 発電機・ESSデータとの整合性を確認してください")
+        print("=" * 80)
+        raise
 
 
 def _update_P_des(P_des, des_event, P_range, time_series_granularity, target_period):

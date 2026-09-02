@@ -113,3 +113,16 @@ def _set_optimization_condition(uc_data):
         )
         _e += ' Must choose between "fixed", "season", and "timeline".'
         sys.exit(_e)
+
+    # formulation_type: 定式化のスタイル
+    #   "delta-kW-no-market"   : 従来版（ΔkW価値を考慮しない）。デフォルト・後方互換
+    #   "delta-kW-bid" : ΔkW価値考慮版（需給調整市場の調整力価値を目的関数・制約に反映）
+    # "optimization_timing"（前日計画/当日計画の時間軸）とは直交する2軸目。
+    if "formulation_type" not in uc_data.config:
+        uc_data.config["formulation_type"] = "delta-kW-no-market"
+    elif uc_data.config["formulation_type"] not in ["delta-kW-no-market", "delta-kW-bid"]:
+        _e = 'Error: 設定値"formulation_type"に想定外の値が設定されている。'
+        _e += '"delta-kW-no-market","delta-kW-bid"の中から選択しなくてはならない。'
+        _e += '\nError: The value "formulation_type" is set to an unexpected value.'
+        _e += ' Must choose between "delta-kW-no-market" and "delta-kW-bid".'
+        sys.exit(_e)

@@ -34,11 +34,38 @@ def _set_variables(m, uc_data, uc_dicts):
         _n = "GF&LFC_reserve_of_generation(down)"
         uc_dicts.p_gf_lfc_down = m.addVars(_timeline, uc_dicts.generation, name=_n)
 
-    if uc_data.config["set_p_tert"]:
-        _n = "tertiary_reserve_of_generation(up)"
-        uc_dicts.p_tert_up = m.addVars(_timeline, uc_dicts.generation, name=_n)
-        _n = "tertiary_reserve_of_generation(down)"
-        uc_dicts.p_tert_down = m.addVars(_timeline, uc_dicts.generation, name=_n)
+    # 三次調整力変数（発電機）は formulation_type で切替
+    if uc_data.config.get("formulation_type") == "delta-kW-bid":
+        # ΔkW価値考慮版: 計画の時間軸 optimization_timing により変数を切替
+        _timing = uc_data.config.get("optimization_timing", "day-ahead")
+        if _timing == "day-ahead":
+            if uc_data.config["set_p_delta_kW_tert"]:
+                _n = "tertiary_reserve_power_of_generation_in_day-ahead(up)"
+                uc_dicts.p_delta_kW_tert_up = m.addVars(_timeline, uc_dicts.generation, name=_n)
+                _n = "tertiary_reserve_power_of_generation_in_day-ahead(down)"
+                uc_dicts.p_delta_kW_tert_down = m.addVars(_timeline, uc_dicts.generation, name=_n)
+        elif _timing == "intra-day":
+            if uc_data.config["set_p_id"]:
+                _n = "tertiary_reserve_energy_of_generation_in_intra-day(up)"
+                uc_dicts.p_id_up = m.addVars(_timeline, uc_dicts.generation, name=_n)
+                _n = "tertiary_reserve_energy_of_generation_in_intra-day(down)"
+                uc_dicts.p_id_down = m.addVars(_timeline, uc_dicts.generation, name=_n)
+                # u_{t,g}^{id is UP} (当日計画での三次調整電力量の方向を決定するバイナリ変数)
+                _n = "intra_day_tertiary_reserve_direction_of_generation(up)"
+                if uc_data.config["make_u_continuous"]:
+                    _vt = GRB.CONTINUOUS
+                else:
+                    _vt = GRB.BINARY
+                uc_dicts.u_id_is_up = m.addVars(
+                    _timeline, uc_dicts.generation, vtype=_vt, ub=1, name=_n
+                )
+    else:
+        # 従来版（develop 後方互換）
+        if uc_data.config["set_p_tert"]:
+            _n = "tertiary_reserve_of_generation(up)"
+            uc_dicts.p_tert_up = m.addVars(_timeline, uc_dicts.generation, name=_n)
+            _n = "tertiary_reserve_of_generation(down)"
+            uc_dicts.p_tert_down = m.addVars(_timeline, uc_dicts.generation, name=_n)
 
     if uc_data.config["set_u"]:
         _n = "operation_status_of_generation"
@@ -116,11 +143,37 @@ def _set_variables(m, uc_data, uc_dicts):
         _n = "GF&LFC_reserve_of_ESS(down)"
         uc_dicts.p_ess_gf_lfc_down = m.addVars(_timeline, uc_dicts.ess, name=_n)
 
-    if uc_data.config["set_p_ess_tert"]:
-        _n = "tertiary_reserve_of_ESS(up)"
-        uc_dicts.p_ess_tert_up = m.addVars(_timeline, uc_dicts.ess, name=_n)
-        _n = "tertiary_reserve_of_ESS(down)"
-        uc_dicts.p_ess_tert_down = m.addVars(_timeline, uc_dicts.ess, name=_n)
+    # 三次調整力変数（ESS）も formulation_type で切替
+    if uc_data.config.get("formulation_type") == "delta-kW-bid":
+        _timing = uc_data.config.get("optimization_timing", "day-ahead")
+        if _timing == "day-ahead":
+            if uc_data.config["set_p_ess_delta_kW_tert"]:
+                _n = "tertiary_reserve_power_of_ESS_in_day-ahead(up)"
+                uc_dicts.p_ess_delta_kW_tert_up = m.addVars(_timeline, uc_dicts.ess, name=_n)
+                _n = "tertiary_reserve_power_of_ESS_in_day-ahead(down)"
+                uc_dicts.p_ess_delta_kW_tert_down = m.addVars(_timeline, uc_dicts.ess, name=_n)
+        elif _timing == "intra-day":
+            if uc_data.config["set_p_ess_id"]:
+                _n = "tertiary_reserve_energy_of_ESS_in_intra-day(up)"
+                uc_dicts.p_ess_id_up = m.addVars(_timeline, uc_dicts.ess, name=_n)
+                _n = "tertiary_reserve_energy_of_ESS_in_intra-day(down)"
+                uc_dicts.p_ess_id_down = m.addVars(_timeline, uc_dicts.ess, name=_n)
+                # u_{t,ess}^{id is UP} (当日計画での三次調整電力量の方向を決定するバイナリ変数)
+                _n = "intra_day_tertiary_reserve_direction_of_ESS(up)"
+                if uc_data.config.get("make_dchg_chg_ess_continuous", False):
+                    _vt = GRB.CONTINUOUS
+                else:
+                    _vt = GRB.BINARY
+                uc_dicts.u_ess_id_is_up = m.addVars(
+                    _timeline, uc_dicts.ess, vtype=_vt, ub=1, name=_n
+                )
+    else:
+        # 従来版（develop 後方互換）
+        if uc_data.config["set_p_ess_tert"]:
+            _n = "tertiary_reserve_of_ESS(up)"
+            uc_dicts.p_ess_tert_up = m.addVars(_timeline, uc_dicts.ess, name=_n)
+            _n = "tertiary_reserve_of_ESS(down)"
+            uc_dicts.p_ess_tert_down = m.addVars(_timeline, uc_dicts.ess, name=_n)
 
     if uc_data.config["set_e_ess"]:
         _n = "energy_storage_of_ESS"

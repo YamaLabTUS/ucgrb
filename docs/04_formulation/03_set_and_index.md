@@ -2,7 +2,7 @@
 
 $$
 \begin{array}{ll}
-      t \in T=\{ 1, 2, ... , end-1, end \}
+      t \in T=\\{ 1, 2, ... , end-1, end \\}
        & : 最適化対象期間
       \\
       t \in T_{g}^{\text{Planned Outage}} \\;\\;\\;\\; \forall g \in G_{N\\&T}
@@ -23,7 +23,7 @@ $$
       a \in A
        & : 地域
       \\
-      g \in G=\{ G_{N\\&T} \cup G_{HYDRO} \}
+      g \in G=\\{ G_{N\\&T} \cup G_{HYDRO} \\}
        & : 大規模発電機
       \\
       g \in G_{N\\&T}
