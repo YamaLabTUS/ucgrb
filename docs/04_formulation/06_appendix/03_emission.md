@@ -4,63 +4,63 @@
 - [添字と集合](../03_set_and_index.md)
 - 定数
   1. [地域に関する定数](../04_parameter/01_area.md)
-  2. [大規模発電機に関する定数](../04_parameter/02_generator.md)
+  2. [大規模発電機に関する定数](../04_parameter/02_generation.md)
   3. [再生可能エネルギーに関する定数](../04_parameter/03_re.md)
   4. [エネルギー貯蔵システム（ESS）に関する定数](../04_parameter/04_ess.md)
   5. [連系線に関する定数](../04_parameter/05_tie.md)
   6. [計画種に依存する定数](../04_parameter/06_depend_on_scheduling_kind.md)
 - 決定変数
   1. [地域に関する決定変数](../05_variable/01_area.md)
-  2. [大規模発電機に関する決定変数](../05_variable/02_geneation.md)
+  2. [大規模発電機に関する決定変数](../05_variable/02_generation.md)
   3. [再生可能エネルギーに関する決定変数](../05_variable/03_re.md)
   4. [エネルギー貯蔵システム（ESS）に関する決定変数](../05_variable/04_ess.md)
   5. [連系線に関する決定変数](../05_variable/05_tie.md)
 
 
 $$
-\begin{align}
+\begin{aligned}
    F_{t,g,\text{CO} _ {2}}
     & = \begin{cases}
-           0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \ \ \ \ \ \ \ \left(g \\_ type_{g} \in \{\text{HYDRO},\text{NUCL}\}\right) \\
+           0 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \  \ \ \ \ \ \ \ \left(g \\_ type_{g} \in \\{\text{HYDRO},\text{NUCL}\\}\right) \\
            C_{g,\text{CO} _ 2}^{\text{coef}}\ p_{t,g} + C_{g,\text{CO} _ 2}^{\text{intc}}\ u_{t,g} + C_{g,\text{CO} _ 2}^{\text{startup}}\ su_{t,g}
-           \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \left(g \\_ type_{g} \in \{\text{OIL},\text{GAS},\text{COAL}\}\right)
+           \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \left(g \\_ type_{g} \in \\{\text{OIL},\text{GAS},\text{COAL}\\}\right)
         \end{cases}
     & \forall t \in T, \forall g \in G
-    & \qquad (1)
-\end{align}
+    & \qquad (6\text{-}3\text{-}1)
+\end{aligned}
 $$
 
 $$
-\begin{align}
+\begin{aligned}
    C_{g,\text{CO} _ {2}}^{\text{coef}}
     & = \frac{EMIS_{g}^{\text{MAX}} - EMIS_{g}^{\text{MIN}}}{P_{g}^{\text{MAX}} - P_{g}^{\text{MIN}}}
     & \forall g \in G
-    & \qquad (2)
+    & \qquad (6\text{-}3\text{-}2)
 \\
    C_{g,\text{CO} _ 2}^{\text{intc}}
     & = EMIS_{g}^{\text{MIN}} - C_{g,\text{CO} _ 2}^{\text{coef}} P_{g}^{\text{MIN}}
     & \forall g \in G
-    & \qquad (3)
+    & \qquad (6\text{-}3\text{-}3)
 \\
    C_{g,\text{CO} _ 2}^{\text{startup}}
     & = \frac{C_{g}^{\text{startup}}EF_{g \\_ type_{g}}^{\text{startup}}}{FuelPrice_{g \\_ type_{g}}^{\text{startup}}}
     & \forall g \in G
-    & \qquad (4)
-\end{align}
+    & \qquad (6\text{-}3\text{-}4)
+\end{aligned}
 $$
 
 $$
-\begin{align}
+\begin{aligned}
    EMIS_{g}^{\text{MAX}}
     & = EF_{g \\_ type_{g}} FCPUMC_{g \\_ type_{g}} HR_{g}^{\text{MAX}} P_{g}^{MAX,GENE \\_ END}
     & \forall g \in G
-    & \qquad (5)
+    & \qquad (6\text{-}3\text{-}5)
    \\
    EMIS_{g}^{\text{MIN}}
     & = EF_{g \\_ type_{g}} FCPUMC_{g \\_ type_{g}} HR_{g}^{\text{MIN}} P_{g}^{MIN,GENE \\_ END}
     & \forall g \in G
-    & \qquad (6)
-\end{align}
+    & \qquad (6\text{-}3\text{-}6)
+\end{aligned}
 $$
 
 $$
@@ -103,4 +103,4 @@ $$
 \end{array}
 $$
 
-※ 大規模発電機の種類 $`g\_type`$ が水力または原子力の場合、CO<sub>2</sub>排出量 $F_{t,g,\text{CO} _ 2}$ は0で固定される。
+※ 大規模発電機の種類 $`g\\_type`$ が水力または原子力の場合、CO<sub>2</sub>排出量 $F_{t,g,\text{CO} _ 2}$ は0で固定される。

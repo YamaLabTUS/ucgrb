@@ -18,6 +18,7 @@ from ._make_generation_dicts import _make_generation_dicts
 from ._make_generation_type_dicts import _make_generation_type_dicts
 from ._make_maintenance_dicts import _make_maintenance_dicts
 from ._make_max_energy_dicts import _make_max_energy_dicts
+from ._make_optimization_timing_dicts import _make_optimization_timing_dicts
 from ._make_others_dicts import _make_others_dicts
 from ._make_planned_outage_dicts import _make_planned_outage_dicts
 from ._make_pv_dicts import _make_pv_dicts
@@ -71,6 +72,11 @@ class UCDicts:
         opt_num : int
             何回目の最適化かを示す整数
         """
+        # 現イテレーションの計画時間軸 optimization_timing を設定。
+        # モデル構築（make_grb_model）は delta-kW-no-market では optimization_timing を参照しないため
+        # delta-kW-no-market の最適化結果（LP）は不変だが、出力（output_result）は両モードで
+        # 時間軸を参照するため、両モードで設定しておく。
+        _make_optimization_timing_dicts(uc_data, self, opt_num)
         _make_timeline_dicts(uc_data, self, opt_num)
         _update_pv_dicts(uc_data, self, opt_num)
         _update_wf_dicts(uc_data, self, opt_num)

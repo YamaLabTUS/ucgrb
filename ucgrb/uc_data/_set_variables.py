@@ -13,8 +13,17 @@ def _set_variables(uc_data):
         uc_data.config["set_p"] = True
     if "set_p_gf_lfc" not in uc_data.config:
         uc_data.config["set_p_gf_lfc"] = True
-    if "set_p_tert" not in uc_data.config:
-        uc_data.config["set_p_tert"] = True
+    # 三次調整力変数のフラグは formulation_type により切替（直交2軸目）
+    #   delta-kW-no-market   : 従来の set_p_tert
+    #   delta-kW-bid : ΔkW価値考慮版の set_p_delta_kW_tert（前日）/ set_p_id（当日）
+    if uc_data.config.get("formulation_type") == "delta-kW-bid":
+        if "set_p_delta_kW_tert" not in uc_data.config:
+            uc_data.config["set_p_delta_kW_tert"] = True
+        if "set_p_id" not in uc_data.config:
+            uc_data.config["set_p_id"] = True
+    else:
+        if "set_p_tert" not in uc_data.config:
+            uc_data.config["set_p_tert"] = True
     if "set_u" not in uc_data.config:
         uc_data.config["set_u"] = True
     if "set_su" not in uc_data.config:
@@ -41,8 +50,15 @@ def _set_variables(uc_data):
         uc_data.config["set_p_ess"] = True
     if "set_p_ess_gf_lfc" not in uc_data.config:
         uc_data.config["set_p_ess_gf_lfc"] = True
-    if "set_p_ess_tert" not in uc_data.config:
-        uc_data.config["set_p_ess_tert"] = True
+    # ESS の三次調整力変数フラグも formulation_type により切替
+    if uc_data.config.get("formulation_type") == "delta-kW-bid":
+        if "set_p_ess_delta_kW_tert" not in uc_data.config:
+            uc_data.config["set_p_ess_delta_kW_tert"] = True
+        if "set_p_ess_id" not in uc_data.config:
+            uc_data.config["set_p_ess_id"] = True
+    else:
+        if "set_p_ess_tert" not in uc_data.config:
+            uc_data.config["set_p_ess_tert"] = True
     if "set_e_ess " not in uc_data.config:
         uc_data.config["set_e_ess"] = True
     if "set_e_ess_short " not in uc_data.config:

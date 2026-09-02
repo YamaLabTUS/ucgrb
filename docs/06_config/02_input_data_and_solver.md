@@ -104,6 +104,30 @@ time_series_to_be_linearly_interpolated: ["E_R_plan"]
 
 最適化対象となる地域を配列で表示。CSVデータに記載されている全ての地域を対象としたい場合、`ALL`と記載する。
 
+### nuclear_and_thermal_generation_type
+
+- **書式: 文字列または配列**
+
+- **デフォルト値: `["NUCL", "COAL", "GAS", "OIL"]`**
+
+原子力・火力発電機に対応する種別名。
+
+### nuclear_generation_type
+
+- **書式: 文字列または配列**
+
+- **デフォルト値: `["NUCL"]`**
+
+原子力発電機に対応する種別名。
+
+### hydro_generation_type
+
+- **書式: 文字列または配列**
+
+- **デフォルト値: `["HYDRO"]`**
+
+水力発電機に対応する種別名。
+
 記載例:
 
 ```yaml
@@ -145,7 +169,7 @@ areas: ["Hokkaido", "Tohoku", "Tokyo", "Chubu", "Hokuriku", "Kansai", "Chugoku",
 
 - **デフォルト値: `0.01`**
 
-GurobiモデルパラメーターのMIP最適化相対ギャップ”[MIPGap](https://www.gurobi.com/documentation/9.5/refman/mipgap2.html)”の設定
+GurobiモデルパラメーターのMIP最適化相対ギャップ”[MIPGap](https://www.gurobi.com/documentation/9.5/refman/mipgap.html)”の設定
 
 ### grb_MIPGapAbs
 
@@ -169,7 +193,7 @@ Gurobiモデルパラメーターのインテグリティ・フォーカス”[I
 
 - **デフォルト値: `1.0e-6`**
 
-GurobiモデルパラメーターのFeasibility Tolerance(実現可能性許容範囲”)[FeasibilityTol](https://www.gurobi.com/documentation/9.5/refman/integralityfocus.html)”の設定
+GurobiモデルパラメーターのFeasibility Tolerance(実現可能性許容範囲)”[FeasibilityTol](https://www.gurobi.com/documentation/9.5/refman/feasibilitytol.html)”の設定
 
 ### grb_FeasibilityTol_for_Pi_calc
 
@@ -177,4 +201,24 @@ GurobiモデルパラメーターのFeasibility Tolerance(実現可能性許容�
 
 - **デフォルト値: `1.0e-5`**
 
-シャドウプライス計算ためのGurobiモデルパラメーターのFeasibility Tolerance(実現可能性許容範囲”)[FeasibilityTol](https://www.gurobi.com/documentation/9.5/refman/feasibilitytol.html)”の設定
+シャドウプライス計算ためのGurobiモデルパラメーターのFeasibility Tolerance(実現可能性許容範囲)”[FeasibilityTol](https://www.gurobi.com/documentation/9.5/refman/feasibilitytol.html)”の設定
+
+### grb_NodefileStart
+
+- **書式: 数字**
+
+- **デフォルト値: 起動計算機の物理メモリの半分（GB）**
+
+GurobiモデルパラメータのNode file start(MIPのノードをディスクに記述し始めるメモリ量)”[NodefileStart](https://docs.gurobi.com/projects/optimizer/en/current/reference/parameters.html#nodefilestart)”の設定
+
+デフォルト値は、Windows、Mac、Linuxの各OSで自動的に物理メモリを検出し、その半分の値（GB単位）が設定される。物理メモリの検出に失敗した場合は、デフォルト値として8.0 GBが使用される。
+
+### grb_Threads
+
+- **書式: 整数**
+
+- **デフォルト値: `0`（自動設定）**
+
+GurobiモデルパラメータのCPUスレッド数”[Threads](https://docs.gurobi.com/projects/optimizer/en/current/reference/parameters.html#threads)”の設定
+
+`0`を指定した場合、Gurobiが利用可能なCPUコア数を自動的に検出して使用する。

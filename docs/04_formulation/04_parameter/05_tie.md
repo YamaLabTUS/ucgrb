@@ -15,7 +15,7 @@ $$
        & : 連系線 tie の三次上げ調整力融通使用ペナルティ係数 [千円/\text{MWh}]
       \\
       C_{tie}^{\text{Tert}\,\text{DOWN, penalty}}
-       & : 連系線 tie の三次上げ調整力融通使用ペナルティ係数 [千円/\text{MWh}]
+       & : 連系線 tie の三次下げ調整力融通使用ペナルティ係数 [千円/\text{MWh}]
       \\
       P_{t,tie}^{\text{TTC, forward}}
        & : 時刻 t における連系線 tie の順方向運用容量 [\text{MW}]

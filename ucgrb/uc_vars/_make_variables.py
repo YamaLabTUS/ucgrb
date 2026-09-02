@@ -28,6 +28,10 @@ def _make_variables(m, uc_data, uc_dicts, i, uc_vars):
         delattr(uc_vars, "sd")
     if hasattr(uc_vars, "e_ess"):
         delattr(uc_vars, "e_ess")
+    if hasattr(uc_vars, "p_ess_d"):
+        delattr(uc_vars, "p_ess_d")
+    if hasattr(uc_vars, "p_ess_c"):
+        delattr(uc_vars, "p_ess_c")
     if hasattr(uc_vars, "T_INHE_A"):
         delattr(uc_vars, "T_INHE_A")
     if hasattr(uc_vars, "T_INHE_B"):
@@ -101,6 +105,32 @@ def _make_variables(m, uc_data, uc_dicts, i, uc_vars):
                 if uc_data.config["export_inherited_vars_to_json"] is True:
                     uc_dicts.e_ess[_key].VTag = uc_dicts.e_ess[_key].VarName
         uc_vars.e_ess = gp.tupledict(_e_ess)
+
+    # p_ess_d, p_ess_c (ESSの発電量・充電量) — ΔkW価値考慮版でのみ引き継ぐ
+    # 大規模発電機 p と同様に T_INHE_A 期間の値を保存する。
+    # 従来版（delta-kW-no-market）では保存しない（develop 後方互換）。
+    if uc_data.config.get("formulation_type") == "delta-kW-bid" and uc_data.config.get(
+        "set_p_ess_to_inherited_vars", True
+    ):
+        _p_ess_d = []
+        _p_ess_c = []
+        for time in uc_dicts.timeline_inherited_A:
+            for name, area in uc_dicts.ess:
+                _key = (time, name, area)
+                if _key in uc_dicts.p_ess_d:
+                    _value_d = uc_dicts.p_ess_d[_key].X
+                    _p_ess_d.append((_key, _value_d))
+                    if uc_data.config["export_inherited_vars_to_json"] is True:
+                        uc_dicts.p_ess_d[_key].VTag = uc_dicts.p_ess_d[_key].VarName
+                if _key in uc_dicts.p_ess_c:
+                    _value_c = uc_dicts.p_ess_c[_key].X
+                    _p_ess_c.append((_key, _value_c))
+                    if uc_data.config["export_inherited_vars_to_json"] is True:
+                        uc_dicts.p_ess_c[_key].VTag = uc_dicts.p_ess_c[_key].VarName
+        if _p_ess_d:
+            uc_vars.p_ess_d = gp.tupledict(_p_ess_d)
+        if _p_ess_c:
+            uc_vars.p_ess_c = gp.tupledict(_p_ess_c)
 
     # 引き継ぎデータの出力
     if uc_data.config["export_inherited_vars_to_json"] is True:

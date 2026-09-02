@@ -1,1 +1,83 @@
-Coming soon ...
+# Tie Line Data
+
+## Tie Line
+
+**File name: tie.csv**
+
+- tie.csv represents the name and connection relationship of tie lines.
+
+| Index              | Value     | Summary                                                                                                                                                                                                                          |
+| ------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name                      | character string | Name (Duplication prohibited)<br />**Note**: Only ASCII characters (alphanumeric characters and symbols) are allowed. Non-ASCII characters such as Japanese are not allowed.                                                                                                                                                                                                              |
+| from                      | character string | Name of the transmission source area (sending area when the direction of the tie line is positive)                                                                                                                                                                      |
+| to                        | character string | Name of the transmission destination area (receiving area when the direction of the tie line is positive)                                                                                                                                                                      |
+| C_tie_penalty             | numeral   | Power interchange usage penalty factor [Thousands of yen/MWh]                                                                                                                                                                                         |
+| C_tie_penalty_GF_LFC_UP   | numeral   | GF&LFC up-reserve interchange usage penalty factor [Thousands of yen/MWh]                                                                                                                                                                             |
+| C_tie_penalty_GF_LFC_DOWN | numeral   | GF&LFC down-reserve interchange usage penalty factor [Thousands of yen/MWh]                                                                                                                                                                             |
+| C_tie_penalty_Tert_UP     | numeral   | Tertiary up-reserve interchange usage penalty factor [Thousands of yen/MWh]                                                                                                                                                                               |
+| C_tie_penalty_Tert_DOWN   | numeral   | Tertiary down-reserve interchange usage penalty factor [Thousands of yen/MWh]                                                                                                                                                                               |
+| TTC_forward               | numeral   | Forward direction (from sending area "from" to receiving area "to") operating capacity [MW] <br />Used when **setting_method_of_TTC_and_Margin**=`fixed`                                                                                        |
+| TTC_counter               | numeral   | Counter direction (from receiving area "to" to sending area "from") operating capacity [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed`                                                                                         |
+| Margin_forward            | numeral   | Forward direction (from sending area "from" to receiving area "to") capacity margin [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed`                                                                                     |
+| Margin_counter            | numeral   | Counter direction (from receiving area "to" to sending area "from") capacity margin [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed`                                                                                     |
+| GF_LFC_UP_forward_MAX     | numeral   | Forward direction (from sending area "from" to receiving area "to") Maximum GF&LFC up-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed` and **consider_maximum_reserve_constraint_for_tie**=`true` |
+| GF_LFC_UP_counter_MAX     | numeral   | Counter direction (from receiving area "to" to sending area "from") Maximum GF&LFC up-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed` and **consider_maximum_reserve_constraint_for_tie**=`true` |
+| GF_LFC_DOWN_forward_MAX   | numeral   | Forward direction (from sending area "from" to receiving area "to") Maximum GF&LFC down-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed` and **consider_maximum_reserve_constraint_for_tie**=`true` |
+| GF_LFC_DOWN_counter_MAX   | numeral   | Counter direction (from receiving area "to" to sending area "from") Maximum GF&LFC down-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed` and **consider_maximum_reserve_constraint_for_tie**=`true` |
+| Tert_UP_forward_MAX       | numeral   | Forward direction (from sending area "from" to receiving area "to") Maximum tertiary up-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed` and **consider_maximum_reserve_constraint_for_tie**=`true`   |
+| Tert_UP_counter_MAX       | numeral   | Counter direction (from receiving area "to" to sending area "from") Maximum tertiary up-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed` and **consider_maximum_reserve_constraint_for_tie**=`true`   |
+| Tert_DOWN_forward_MAX     | numeral   | Forward direction (from sending area "from" to receiving area "to") Maximum tertiary down-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed` and **consider_maximum_reserve_constraint_for_tie**=`true`   |
+| Tert_DOWN_counter_MAX     | numeral   | Counter direction (from receiving area "to" to sending area "from") Maximum tertiary down-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`fixed` and **consider_maximum_reserve_constraint_for_tie**=`true`   |
+
+### Example
+
+[data_set/data-example/tie/tie.csv](../../data_set/data-example/tie/tie.csv)
+
+[data_set/data-mini/tie.csv](../../data_set/data-mini/tie.csv)
+
+| name     | from   | to     | C_tie_penalty | C_tie_penalty_GF_LFC_UP | C_tie_penalty_GF_LFC_DOWN | C_tie_penalty_Tert_UP | C_tie_penalty_Tert_DOWN | TTC_forward | TTC_counter | Margin_forward | Margin_counter | GF_LFC_UP_forward_MAX | GF_LFC_UP_counter_MAX | GF_LFC_DOWN_forward_MAX | GF_LFC_DOWN_counter_MAX | Tert_UP_forward_MAX | Tert_UP_counter_MAX | Tert_DOWN_forward_MAX | Tert_DOWN_counter_MAX |
+| :------- | :----- | :----- | :------------ | :---------------------- | :------------------------ | :-------------------- | :---------------------- | :---------- | :---------- | :------------- | :------------- | :-------------------- | :-------------------- | :---------------------- | :---------------------- | :------------------ | :------------------ | :-------------------- | :-------------------- |
+| Tie-Line | Area_B | Area_A | 0.002         | 0.002                   | 0.002                     | 0.002                 | 0.002                   | 400         | 400         | 50             | 50             | 100                   | 100                   | 100                     | 100                     | 100                 | 100                 | 100                   | 100                   |
+| ...      | ...    | ...    | ...           | ...                     | ...                       | ...                   | ...                     | ...         | ...         | ...            | ...            | ...                   | ...                   | ...                     | ...                     | ...                 | ...                 | ...                   | ...                   |
+
+## Tie Line Operation
+
+**File name: tie_operation.csv**
+
+- Describes the maximum transmission capacity for each tie line by month and time period.
+- Used when **setting_method_of_TTC_and_Margin**=`season`
+
+| Index            | Value     | Summary                                                                                                                                                                                                                                                                               |
+| ----------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tie                     | character string | Name of target tie line                                                                                                                                                                                                                                                                   |
+| month_section           | character string | Indicates seasonal classification. |
+| of_the_clock_section    | character string | Time zones are divided into four categories: weekday daytime, weekday nighttime, holiday daytime, and holiday nighttime.<br />"weekday_day": Weekday daytime, "weekday_night": Weekday nighttime, "holiday_day": Holiday daytime, "holiday_night": Holiday nighttime.                                                                                                              |
+| TTC_forward             | numeral   | Forward direction (from sending area "from" to receiving area "to") operating capacity [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season`                                                                                                                                             |
+| TTC_counter             | numeral   | Counter direction (from receiving area "to" to sending area "from") operating capacity [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season`                                                                                                                                             |
+| Margin_forward          | numeral   | Forward direction (from sending area "from" to receiving area "to") capacity margin [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season`                                                                                                                                         |
+| Margin_counter          | numeral   | Counter direction (from receiving area "to" to sending area "from") capacity margin [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season`                                                                                                                                         |
+| GF_LFC_UP_forward_MAX   | numeral   | Forward direction (from sending area "from" to receiving area "to") Maximum GF&LFC up-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season` and **consider_maximum_reserve_constraint_for_tie**=`true`                                                     |
+| GF_LFC_UP_counter_MAX   | numeral   | Counter direction (from receiving area "to" to sending area "from") Maximum GF&LFC up-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season` and **consider_maximum_reserve_constraint_for_tie**=`true`                                                     |
+| GF_LFC_DOWN_forward_MAX | numeral   | Forward direction (from sending area "from" to receiving area "to") Maximum GF&LFC down-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season` and **consider_maximum_reserve_constraint_for_tie**=`true`                                                     |
+| GF_LFC_DOWN_counter_MAX | numeral   | Counter direction (from receiving area "to" to sending area "from") Maximum GF&LFC down-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season` and **consider_maximum_reserve_constraint_for_tie**=`true`                                                     |
+| Tert_UP_forward_MAX     | numeral   | Forward direction (from sending area "from" to receiving area "to") Maximum tertiary up-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season` and **consider_maximum_reserve_constraint_for_tie**=`true`                                                       |
+| Tert_UP_counter_MAX     | numeral   | Counter direction (from receiving area "to" to sending area "from") Maximum tertiary up-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season` and **consider_maximum_reserve_constraint_for_tie**=`true`                                                       |
+| Tert_DOWN_forward_MAX   | numeral   | Forward direction (from sending area "from" to receiving area "to") Maximum tertiary down-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season` and **consider_maximum_reserve_constraint_for_tie**=`true`                                                       |
+| Tert_DOWN_counter_MAX   | numeral   | Counter direction (from receiving area "to" to sending area "from") Maximum tertiary down-reserve that can be interchanged [MW]<br />Used when **setting_method_of_TTC_and_Margin**=`season` and **consider_maximum_reserve_constraint_for_tie**=`true`                                                       |
+
+### Example
+
+[data_set/data-example/tie/season/operation/weekday_day/tie_operation.csv](../../data_set/data-example/tie/season/operation/weekday_day/tie_operation.csv)
+
+[data_set/data-example/tie/season/operation/weekday_night/tie_operation.csv](../../data_set/data-example/tie/season/operation/weekday_night/tie_operation.csv)
+
+[data_set/data-example/tie/season/operation/holiday_day/tie_operation.csv](../../data_set/data-example/tie/season/operation/holiday_day/tie_operation.csv)
+
+[data_set/data-example/tie/season/operation/holiday_night/tie_operation.csv](../../data_set/data-example/tie/season/operation/holiday_night/tie_operation.csv)
+
+| tie      | month_section | of_the_clock_section | TTC_forward | TTC_counter | Margin_forward | Margin_counter | GF_LFC_UP_forward_MAX | GF_LFC_UP_counter_MAX | GF_LFC_DOWN_forward_MAX | GF_LFC_DOWN_counter_MAX | Tert_UP_forward_MAX | Tert_UP_counter_MAX | Tert_DOWN_forward_MAX | Tert_DOWN_counter_MAX |
+| :------- | :------------ | :------------------- | :---------- | :---------- | :------------- | :------------- | :-------------------- | :-------------------- | :---------------------- | :---------------------- | :------------------ | :------------------ | :-------------------- | :-------------------- |
+| Tie-Line | Apr           | weekday_day          | 450         | 450         | 87.3           | 171.3          | 100                   | 100                   | 100                     | 100                     | 100                 | 100                 | 100                   | 100                   |
+| Tie-Line | May           | weekday_day          | 450         | 450         | 96.3           | 174.3          | 100                   | 100                   | 100                     | 100                     | 100                 | 100                 | 100                   | 100                   |
+| Tie-Line | Jun           | weekday_day          | 450         | 450         | 93.3           | 174.3          | 100                   | 100                   | 100                     | 100                     | 100                 | 100                 | 100                   | 100                   |
+| ...      | ...           | ...                  | ...         | ...         | ...            | ...            | ...                   | ...                   | ...                     | ...                     | ...                 | ...                 | ...                   | ...                   |

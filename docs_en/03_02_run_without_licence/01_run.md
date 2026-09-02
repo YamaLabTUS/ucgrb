@@ -11,11 +11,15 @@ As an example, we show the procedure for implementation with the following setti
 
 The procedure is as follows:
 
-1. Clone this registry.
+1. Clone this repository.
+
+       ```cmd
+       git clone https://github.com/YamaLabTUS/ucgrb.git
+       ```
+       **Reference: [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)**
 
 
-
-2. Create the following script "main.py" and configuration file "config.yml" in the same directory as this registry.
+2. Create the following script "main.py" and configuration file "config.yml" in the same directory as this repository.
 
    **main.py**
 
@@ -46,7 +50,7 @@ The procedure is as follows:
 
    <img src="../img/03/directories_5.png" width="300" alt="Construct of directories">
 
-3. Open a console such as PowerShell, go to the registry (ucgrb), and set up the poetry virtual environment.
+3. Open a console such as PowerShell, go to the repository (ucgrb), and set up the poetry virtual environment.
 
   ```cmd
   cd ucgrb
@@ -55,15 +59,23 @@ The procedure is as follows:
 
 4. Run "main.py" on the virtual environment. There are mainly two methods.
 
-   - Enter the poetry virtual environment shell, change the working directory to the location where main.py is located using cd command, and run `python main.py`.
+  - Activate the poetry virtual environment, change the working directory to the location where main.py is located using cd command, and run `python main.py`. In PowerShell, you can execute it with the following input:
 
-     ```cmd
-     poetry shell
-     cd ../
-     python main.py
-     ```
+    ```cmd
+    $envPath = poetry env info --path | & "$envPath\Scripts\Activate.ps1"
+    cd ../
+    python main.py
+    ```
 
-   - After starting VScode or spyder and specifying the interpolator as the poetry virtual environment, open “main.py” and execute it.
+  - On macOS (Terminal), you can execute it with the following input:
+
+    ```bash
+    source $(poetry env info --path)/bin/activate
+    cd ../
+    python main.py
+    ```
+
+  - After starting VScode or spyder and specifying the interpolator as the poetry virtual environment, open "main.py" and execute it.
 
 
 5. The directory "result" is created in the root directory of this repository, and the execution information file "info.txt" and result files (xlsx, json.zip) are output in the result directory.

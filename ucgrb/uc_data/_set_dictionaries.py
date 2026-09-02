@@ -49,6 +49,8 @@ def _set_dictionaries(uc_data):
         uc_data.config["update_wf_dicts"] = True
     if "make_max_energy_dicts" not in uc_data.config:
         uc_data.config["make_max_energy_dicts"] = True
+    if "make_optimization_timing_dicts" not in uc_data.config:
+        uc_data.config["make_optimization_timing_dicts"] = True
     if "make_constants_depend_on_scheduling_kind_dicts" not in uc_data.config:
         uc_data.config["make_constants_depend_on_scheduling_kind_dicts"] = True
     if "calculate_P_MAX" not in uc_data.config:

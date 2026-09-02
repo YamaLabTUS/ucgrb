@@ -1,11 +1,11 @@
 # Constraints on tie line
 The tie lines connecting the multiple areas can be considered.
 
-- Power can be flexibly transferred between connected areas. Transmission losses cannot be taken into account. Instead, a penalty is incurred in proportion to the amount of electricity transmitted, which is added to the objective function (cost).
-- GF and LFC reserve and tertiary reserve can also be flexible.
-  - By changing the setting, the reserve can be limited.
-- •	You can choose to specify total transfer capability (TTC) and margin of tie line as a fixed value for the entire period, by month or time period, or by optimization time granularity. The default is fixed for the entire period.
-- The margin secured in day-ahead scheduling is zero for intra-day scheduling. This allows more inter-regional flexible capacity to be available than in intra-day scheduling. This tool can choose to retain the same amount of margin as day-ahead scheduling for intra-day scheduling. By default, the margin for intra-day scheduling is set to 0.
+- Power can be interchanged between the connected areas. Transmission losses cannot be taken into account. Instead, a penalty is incurred in proportion to the amount of interchanged electricity, which is added to the objective function (cost).
+- GF&LFC reserve and tertiary reserve can also be interchanged.
+  - By changing the setting, the interchangeable reserve can be limited.
+- You can choose to specify the total transfer capability (TTC) and margin of the tie line as a fixed value for the entire period, by month or time period, or per optimization time granularity. By default, it is fixed for the entire period.
+- The margin secured in day-ahead scheduling can either become 0 in intra-day scheduling, making more inter-regional interchange capacity available than in day-ahead scheduling, or be retained at the same amount in intra-day scheduling; you can choose between these. By default, the margin in intra-day scheduling is set to 0.
 
 ![Tie operation](../../img/04/tie_01.png)
 
@@ -14,7 +14,7 @@ The tie lines connecting the multiple areas can be considered.
 ![Tie operation when counter power flow is planned](../../img/04/tie_03.png)
 
 See the following pages for definitions of each set, index, constant, and variable.
-- [Sets and indies](../03_set_and_index.md)
+- [Sets and indices](../03_set_and_index.md)
 - Parameters
   1. [Parameters for area](../04_parameter/01_area.md)
   2. [Parameters for large-scale power generation](../04_parameter/02_generation.md)
@@ -31,167 +31,167 @@ See the following pages for definitions of each set, index, constant, and variab
 
 
 
-## Interchange power constraint for tie lines
+## 1. Interchange power constraint for tie lines
 
 $$
-\begin{align}
+\begin{aligned}
    p_{t,tie}^{\text{forward}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} -
    P_{t,tie}^{\text{Margin, forward}} \right) d_{t,tie}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (1)
+    & \qquad (2\text{-}5\text{-}1\text{-}1)
 \\
    p_{t,tie}^{\text{counter}}
     & \leq \left( P_{t,tie}^{\text{TTC, counter}} -
    P_{t,tie}^{\text{Margin, counter}} \right) ( 1- d_{t,tie} )
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (2)
-\end{align}
+    & \qquad (2\text{-}5\text{-}1\text{-}2)
+\end{aligned}
 $$
 
-## Power flow direction of GF&LFC reserve constraints for tie lines
+## 2. Power flow direction of interchanged GF&LFC reserve constraints for tie lines
 
 $$
-\begin{align}
+\begin{aligned}
    p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, forward}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} +
    P_{t,tie}^{\text{TTC, counter}} \right) d_{t,tie}^{\text{GF\\&LFC}\,\text{UP}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (1)
+    & \qquad (2\text{-}5\text{-}2\text{-}1)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, counter}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} +
    P_{t,tie}^{\text{TTC, counter}} \right) \left( 1 - d_{t,tie}^{\text{GF\\&LFC}\,\text{UP}} \right)
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (2)
+    & \qquad (2\text{-}5\text{-}2\text{-}2)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, forward}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} +
    P_{t,tie}^{\text{TTC, counter}} \right) d_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (3)
+    & \qquad (2\text{-}5\text{-}2\text{-}3)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, counter}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} +
    P_{t,tie}^{\text{TTC, counter}} \right) \left( 1 - d_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN}} \right)
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (4)
-\end{align}
+    & \qquad (2\text{-}5\text{-}2\text{-}4)
+\end{aligned}
 $$
 
-## Power flow direction of tertiary reserve constraints for tie lines
+## 3. Power flow direction of interchanged tertiary reserve constraints for tie lines
 
 $$
-\begin{align}
+\begin{aligned}
    p_{t,tie}^{\text{Tert}\,\text{UP, forward}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} +
    P_{t,tie}^{\text{TTC, counter}} \right) d_{t,tie}^{\text{Tert}\,\text{UP}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (1)
+    & \qquad (2\text{-}5\text{-}3\text{-}1)
 \\
    p_{t,tie}^{\text{Tert}\,\text{UP, counter}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} +
    P_{t,tie}^{\text{TTC, counter}} \right) \left( 1 - d_{t,tie}^{\text{Tert}\,\text{UP}} \right)
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (2)
+    & \qquad (2\text{-}5\text{-}3\text{-}2)
 \\
   p_{t,tie}^{\text{Tert}\,\text{DOWN, forward}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} +
    P_{t,tie}^{\text{TTC, counter}} \right) d_{t,tie}^{\text{Tert}\,\text{DOWN}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (3)
+    & \qquad (2\text{-}5\text{-}3\text{-}3)
 \\
    p_{t,tie}^{\text{Tert}\,\text{DOWN, counter}}
     & \leq \left( P_{t,tie}^{\text{TTC, forward}} +
    P_{t,tie}^{\text{TTC, counter}} \right) \left( 1 - d_{t,tie}^{\text{Tert}\,\text{DOWN}} \right)
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (4)
-\end{align}
+    & \qquad (2\text{-}5\text{-}3\text{-}4)
+\end{aligned}
 $$
 
-## Maximum interchange flexibility constraints for tie lines
+## 4. Maximum interchange reserve constraints for tie lines
 
 $$
-\begin{align}
+\begin{aligned}
    p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, forward}} + p_{t,tie}^{\text{Tert}\,\text{UP, forward}}
     & \leq P_{t,tie}^{\text{TTC, forward}} - p_{t,tie}^{\text{forward}} + p_{t,tie}^{\text{counter}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (1)
+    & \qquad (2\text{-}5\text{-}4\text{-}1)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, counter}} + p_{t,tie}^{\text{Tert}\,\text{UP, counter}}
     & \leq P_{t,tie}^{\text{TTC, counter}} - p_{t,tie}^{\text{counter}} + p_{t,tie}^{\text{forward}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (2)
+    & \qquad (2\text{-}5\text{-}4\text{-}2)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, forward}} + p_{t,tie}^{\text{Tert}\,\text{DOWN, forward}}
     & \leq P_{t,tie}^{\text{TTC, counter}} - p_{t,tie}^{\text{counter}} + p_{t,tie}^{\text{forward}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (3)
+    & \qquad (2\text{-}5\text{-}4\text{-}3)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, counter}} + p_{t,tie}^{\text{Tert}\,\text{DOWN, counter}}
     & \leq P_{t,tie}^{\text{TTC, forward}} - p_{t,tie}^{\text{forward}} + p_{t,tie}^{\text{counter}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (4)
-\end{align}
+    & \qquad (2\text{-}5\text{-}4\text{-}4)
+\end{aligned}
 $$
 
 $$
-\begin{align}
+\begin{aligned}
    p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, forward}}
     & \leq P_{t,tie}^{\text{GF\\&LFC}\,\text{UP, forwardMAX}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (5)
+    & \qquad (2\text{-}5\text{-}4\text{-}5)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, counter}}
     & \leq P_{t,tie}^{\text{GF\\&LFC}\,\text{UP, counterMAX}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (6)
+    & \qquad (2\text{-}5\text{-}4\text{-}6)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, forward}}
     & \leq P_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, forwardMAX}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (7)
+    & \qquad (2\text{-}5\text{-}4\text{-}7)
 \\
    p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, counter}}
     & \leq P_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, counterMAX}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (8)
-\end{align}
+    & \qquad (2\text{-}5\text{-}4\text{-}8)
+\end{aligned}
 $$
 
 $$
-\begin{align}
+\begin{aligned}
    p_{t,tie}^{\text{Tert}\,\text{UP, forward}}
     & \leq P_{t,tie}^{\text{Tert}\,\text{UP, forwardMAX}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (9)
+    & \qquad (2\text{-}5\text{-}4\text{-}9)
 \\
    p_{t,tie}^{\text{Tert}\,\text{UP, counter}}
     & \leq P_{t,tie}^{\text{Tert}\,\text{UP, counterMAX}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (10)
+    & \qquad (2\text{-}5\text{-}4\text{-}10)
 \\
    p_{t,tie}^{\text{Tert}\,\text{DOWN, forward}}
     & \leq P_{t,tie}^{\text{Tert}\,\text{DOWN, forwardMAX}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (11)
+    & \qquad (2\text{-}5\text{-}4\text{-}11)
 \\
    p_{t,tie}^{\text{Tert}\,\text{DOWN, counter}}
     & \leq P_{t,tie}^{\text{Tert}\,\text{DOWN, counterMAX}}
     & \forall t \in T, \forall tie \in \textit{TIE}
-    & \qquad (12)
-\end{align}
+    & \qquad (2\text{-}5\text{-}4\text{-}12)
+\end{aligned}
 $$
 
 
 
-| Condition name                                                         | Default value | Setting name on the configuration file       | Change from the above formula when set to False                                                                                                         |
-| :--------------------------------------------------------------------- | :------------ | :------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Availability of power supply through tie lines                         | True          | flexible_p_tie                               | interchange power $p_{t,tie}^{\text{forward}}$ , $p_{t,tie}^{\text{counter}}$ are fixed at 0                                                            |
-| Depends on the tie line GF&LFC Up-reserve flexible or not              | True          | flexible_p_tie_gf_lfc_up                     | interchange GF&LFC up-reserve $p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, forward}}$ , $p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, counter}}$ are fixed at 0      |
-| Depends on the tie line GF&LFC Down-reserve flexible or not            | False         | flexible_p_tie_gf_lfc_down                   | interchange GF&LFC down-reserve $p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, forward}}$ , $p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, counter}}$ is fixed at 0 |
-| Depends on the tie line tertiary Up-reserve Flexibility                | True          | flexible_p_tie_tert_up                       | Fused tertiary up-reserve $p_{t,tie}^{\text{Tert}\,\text{UP, forward}}$ , $p_{t,tie}^{\text{Tert}\,\text{UP, counter}}$ is fixed at 0                   |
-| Depends on the tie line tertiary down-reserve flexible or not          | False         | flexible_p_tie_tert_down                     | Fused tertiary down-reserve $p_{t,tie}^{\text{Tert}\,\text{DOWN, forward}}$ , $p_{t,tie}^{\text{Tert}\,\text{DOWN, counter}}$ is fixed at 0             |
-| Consideration of operational capacity constraints of tie lines         | True          | consider_TTC                                 | operating capacity $P_{t,tie}^{\text{TTC, forward}}$ , $P_{t,tie}^{\text{TTC, counter}}$ to 100 times                                                   |
-| Consideration of maximum flexibility reserve constraints for tie lines | False         | consider_maximum_ reserve_constraint_for_tie | Equations (5) through (12) of the maximum flexibility reserve constraint of the tie line are not considered                                             |
-| Consideration of operating margins for tie lines in day-ahead planning | False         | consider_tie_margin_in_intra-day             | intra-day planning only, operational margin of tie lines $P_{t,tie}^{\text{Margin, forward}}$ , $P_{t,tie}^{\text{Margin, counter}}$ to 0.              |
+| Condition name                                                       | Default value | Setting name on the configuration file       | Change from the above formula when set to False                                                                                                       |
+| :------------------------------------------------------------------- | :------------ | :------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Availability of power interchange through tie lines                  | True          | flexible_p_tie                               | Fix the interchange power $p_{t,tie}^{\text{forward}}$ , $p_{t,tie}^{\text{counter}}$ to 0                                                            |
+| Availability of GF&LFC up-reserve interchange through tie lines      | True          | flexible_p_tie_gf_lfc_up                     | Fix the interchanged GF&LFC up-reserve $p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, forward}}$ , $p_{t,tie}^{\text{GF\\&LFC}\,\text{UP, counter}}$ to 0     |
+| Availability of GF&LFC down-reserve interchange through tie lines    | False         | flexible_p_tie_gf_lfc_down                   | Fix the interchanged GF&LFC down-reserve $p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, forward}}$ , $p_{t,tie}^{\text{GF\\&LFC}\,\text{DOWN, counter}}$ to 0 |
+| Availability of tertiary up-reserve interchange through tie lines    | True          | flexible_p_tie_tert_up                       | Fix the interchanged tertiary up-reserve $p_{t,tie}^{\text{Tert}\,\text{UP, forward}}$ , $p_{t,tie}^{\text{Tert}\,\text{UP, counter}}$ to 0          |
+| Availability of tertiary down-reserve interchange through tie lines  | False         | flexible_p_tie_tert_down                     | Fix the interchanged tertiary down-reserve $p_{t,tie}^{\text{Tert}\,\text{DOWN, forward}}$ , $p_{t,tie}^{\text{Tert}\,\text{DOWN, counter}}$ to 0    |
+| Consideration of TTC constraints for tie lines                      | True          | consider_TTC                                 | Multiply the TTC $P_{t,tie}^{\text{TTC, forward}}$ , $P_{t,tie}^{\text{TTC, counter}}$ by 100                                                        |
+| Consideration of maximum interchange reserve constraints for tie lines | False       | consider_maximum_reserve_constraint_for_tie | Equations (2-5-4-5) through (2-5-4-12) of the maximum interchange reserve constraint for tie lines are not considered                                 |
+| Consideration of operational margins for tie lines in intra-day scheduling | False   | consider_tie_margin_in_intra-day             | In intra-day scheduling only, set the operational margins of tie lines $P_{t,tie}^{\text{Margin, forward}}$ , $P_{t,tie}^{\text{Margin, counter}}$ to 0. |

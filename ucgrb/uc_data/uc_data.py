@@ -8,7 +8,6 @@ Created on Tue Jul 27 13:59:09 2021.
 import calendar
 import glob
 import os
-import re
 from datetime import datetime, timedelta, timezone
 
 import pandas as pd
@@ -22,6 +21,7 @@ from ._make_info_file import (
     _update_info_file_on_exit,
 )
 from ._make_rolling_opt_list import _make_rolling_opt_list
+from ._normalize_optimization_timing import _normalize_optimization_timing
 from ._set_constraints import _set_constraints
 from ._set_dictionaries import _set_dictionaries
 from ._set_gurobi_model import _set_gurobi_model
@@ -30,6 +30,7 @@ from ._set_object_functions import _set_object_functions
 from ._set_optimization_condition import _set_optimization_condition
 from ._set_output_results import _set_output_results
 from ._set_variables import _set_variables
+from ._validate_name_ascii import _validate_name_ascii
 
 DEFAULT_CONFIG = {
     "config_name": "Example configuration for operation check",
@@ -49,7 +50,7 @@ class UCData:
         クラス「StopWatch」のオブジェクト
     """
 
-    def __init__(self, config_file_path="config.yml", sw=None):
+    def __init__(self, config_file_path="config.yml", sw: StopWatch = None):
         if not os.path.exists(config_file_path):
             self.config = DEFAULT_CONFIG
             print(
@@ -127,6 +128,9 @@ class UCData:
                     _wf_value[_key] = _value
                 _opt["wf_value"] = _wf_value
 
+        # optimization_timing の正規化（旧キー 'kind_of_formulation' を恒久エイリアスとして許容）
+        _normalize_optimization_timing(self)
+
         # 引き継ぎ対象期間の生成
         # 引き継ぎ期間A「inherited_period_A_start_time」と「inherited_period_A_end_time」
         # 対象: p (大規模発電機の出力), e_ess (エネルギー貯蔵装置の蓄電量)
@@ -192,46 +196,67 @@ class _PowerSystem:
     def __init__(self, csv_files, uc_data):
         _f = str(uc_data.config["time_series_granularity"]) + "min"
         for _csv_file in csv_files:
-            _basename = os.path.splitext(os.path.basename(_csv_file))[0]
-            if _basename.find("__") != -1:
-                _basename = _basename[: _basename.find("__")]
-            _new_df = pd.read_csv(_csv_file, skipinitialspace=True)
-            _df = getattr(self, _basename, pd.DataFrame())
-            _df = pd.concat([_df, _new_df], ignore_index=True)
-            if "time" in _df:
-                _df["time"] = pd.to_datetime(_df["time"])
-                _df.set_index("time", inplace=True)
-                if _basename not in uc_data.config["time_series_not_to_be_interpolated"]:
-                    if _basename in uc_data.config["time_series_to_be_linearly_interpolated"]:
-                        _df = (
-                            _df.resample(_f, label="right", closed="right")
-                            .mean()
-                            .interpolate("linear")
-                        )
-                    else:
-                        _df = _df.resample(_f, label="right", closed="right").mean().bfill()
-                _df.reset_index(inplace=True)
-                _df = _df.rename(columns={"index": "time"})
-                _df["time"] = _df["time"].dt.strftime("%Y-%m-%dT%H-%M-%S")
-                _df.set_index("time", inplace=True)
-            if "of_the_clock" in _df:
-                _df["of_the_clock"] = pd.to_datetime(_df["of_the_clock"], format="%H:%M:%S")
-                _df_first = _df.tail(1).copy()
-                _df = pd.concat([_df_first, _df])
-                _df.reset_index(inplace=True)
-                last_row = _df.shape[0] - 1
-                _df.loc[last_row, "of_the_clock"] = _df.loc[
-                    last_row, "of_the_clock"
-                ] + pd.Timedelta(days=1)
-                _df.set_index("of_the_clock", inplace=True)
-                _df = _df.resample(_f, label="right", closed="right").bfill()
-                _df.reset_index(inplace=True)
-                _df["of_the_clock"] = _df["of_the_clock"].dt.strftime("%H:%M:%S")
-                _df.drop(0, inplace=True)
-                _df.drop(columns="index", inplace=True)
-            if "start_day" in _df:
-                _df["start_day"] = pd.to_datetime(_df["start_day"])
-                _df.set_index("start_day", inplace=True)
-            if "day" in _df:
-                _df["day"] = pd.to_datetime(_df["day"]).dt.strftime("%Y/%m/%d")
-            setattr(self, _basename, _df)
+            try:
+                _basename = os.path.splitext(os.path.basename(_csv_file))[0]
+                if _basename.find("__") != -1:
+                    _basename = _basename[: _basename.find("__")]
+                _new_df = pd.read_csv(_csv_file, skipinitialspace=True)
+                # 列名の先頭・末尾スペースをトリミング
+                _new_df.columns = _new_df.columns.str.strip()
+                # データの先頭・末尾スペースをトリミング
+                _new_df = _new_df.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+                # 「name」列に非ASCII文字が含まれていないか検査する
+                _validate_name_ascii(_new_df, _csv_file)
+                _df = getattr(self, _basename, pd.DataFrame())
+                _df = pd.concat([_df, _new_df], ignore_index=True)
+                if "time" in _df:
+                    _df["time"] = pd.to_datetime(_df["time"])
+                    _df.set_index("time", inplace=True)
+                    if _basename not in uc_data.config["time_series_not_to_be_interpolated"]:
+                        if _basename in uc_data.config["time_series_to_be_linearly_interpolated"]:
+                            _df = (
+                                _df.resample(_f, label="right", closed="right")
+                                .mean()
+                                .interpolate("linear")
+                            )
+                        else:
+                            _df = _df.resample(_f, label="right", closed="right").mean().bfill()
+                    _df.reset_index(inplace=True)
+                    _df = _df.rename(columns={"index": "time"})
+                    _df["time"] = _df["time"].dt.strftime("%Y-%m-%dT%H-%M-%S")
+                    _df.set_index("time", inplace=True)
+                if "of_the_clock" in _df:
+                    _df["of_the_clock"] = pd.to_datetime(_df["of_the_clock"], format="%H:%M:%S")
+                    _df_first = _df.tail(1).copy()
+                    _df = pd.concat([_df_first, _df])
+                    _df.reset_index(inplace=True)
+                    last_row = _df.shape[0] - 1
+                    _df.loc[last_row, "of_the_clock"] = _df.loc[
+                        last_row, "of_the_clock"
+                    ] + pd.Timedelta(days=1)
+                    _df.set_index("of_the_clock", inplace=True)
+                    _df = _df.resample(_f, label="right", closed="right").bfill()
+                    _df.reset_index(inplace=True)
+                    _df["of_the_clock"] = _df["of_the_clock"].dt.strftime("%H:%M:%S")
+                    _df.drop(0, inplace=True)
+                    _df.drop(columns="index", inplace=True)
+                if "start_day" in _df:
+                    _df["start_day"] = pd.to_datetime(_df["start_day"])
+                    _df.set_index("start_day", inplace=True)
+                if "day" in _df:
+                    _df["day"] = pd.to_datetime(_df["day"]).dt.strftime("%Y/%m/%d")
+                setattr(self, _basename, _df)
+            except Exception as e:
+                print("=" * 80)
+                print("🚨 CSVファイル読み込みエラー 🚨")
+                print("=" * 80)
+                print(f"📁 エラーが発生したCSVファイル: {_csv_file}")
+                print(f"❌ エラーの種類: {type(e).__name__}")
+                print(f"💬 エラーの詳細: {str(e)}")
+                print("=" * 80)
+                print("🔧 対処方法:")
+                print("   1. CSVファイルの形式を確認してください")
+                print("   2. 列数が一致しているか確認してください")
+                print("   3. データ型が正しいか確認してください")
+                print("=" * 80)
+                raise

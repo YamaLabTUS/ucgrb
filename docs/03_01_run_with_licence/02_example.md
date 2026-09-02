@@ -138,6 +138,14 @@ export_xlsx_file:
   ESS: True
 ```
 
+## 例11: MPSファイルの出力
+
+```yaml
+config_name: "Example 11"
+start_date: "2016-04-01"
+export_mps_file: True
+```
+
 ## 例12: 時間粒度を30分に変更
 
 ```yaml
@@ -153,3 +161,54 @@ config_name: "Example 13"
 start_date: "2016-04-01"
 time_series_granularity: 120
 ```
+
+## 例14: ΔkW価値考慮版（需給調整市場考慮）へ切り替える場合
+
+定式化のスタイルは [`formulation_type`](../06_config/03_unit_commitment.md#formulation_type) で切り替える。
+既定は `delta-kW-no-market` であり、`"delta-kW-bid"` を指定すると ΔkW価値考慮版（需給調整市場考慮）になる。
+
+```yaml
+config_name: "Example 14"
+start_date: "2016-04-01"
+formulation_type: "delta-kW-bid"
+```
+
+- `formulation_type` を**書かない場合は `delta-kW-no-market`**（既定）として動作する（例1〜13 はすべて `delta-kW-no-market`）。
+- `delta-kW-bid` を指定する場合は、発電機・ESS の CSV に ΔkW/kWh 関連列（`C_Delta_kW_UP` 等）を用意する。列が無い場合は `0.0`（または既定値）で補完され、欠損列が WARNING ログに出力される（[「5. CSVファイルの記述方法」](../05_csvfile/02_generation.md)参照）。
+
+### rolling_opt_list を直接記述する場合の `optimization_timing`
+
+自動生成（例1〜4 のような `start_date`/`start_month` 指定）では、各回が前日計画か当日計画かが自動で付与されるため、`optimization_timing` を書く必要はない。
+
+一方、例5 のように `rolling_opt_list` を**直接記述**する場合、`delta-kW-bid` では各要素が前日計画（`day-ahead`）か当日計画（`intra-day`）かを `optimization_timing` で明示する（ΔkW価値考慮版はこの時間軸で定式化を切り替えるため）。`delta-kW-no-market` では省略可能（既定 `day-ahead`）。
+
+```yaml
+config_name: "Example 14b"
+formulation_type: "delta-kW-bid"
+rolling_opt_list:
+  - name: "2016-04-01_day-ahead_scheduling"
+    start_time: "2016-03-31 13:00:00"
+    end_time: "2016-04-02 00:00:00"
+    pre_period_hours: 24
+    optimization_timing: "day-ahead"
+    pv_value:
+      "2016-03-31 13:00:00": "ACT"
+      "2016-04-01 01:00:00": "FCST"
+    wf_value:
+      "2016-03-31 13:00:00": "ACT"
+      "2016-04-01 01:00:00": "FCST"
+    pickup_start_time_in_result_file: "2016-04-01 01:00:00"
+  - name: "2016-04-01_intra-day_scheduling"
+    start_time: "2016-04-01 01:00:00"
+    end_time: "2016-04-02 00:00:00"
+    pre_period_hours: 24
+    optimization_timing: "intra-day"
+    pv_value:
+      "2016-04-01 01:00:00": "ACT"
+    wf_value:
+      "2016-04-01 01:00:00": "ACT"
+    fix_tie_margin_to_zero: True
+    fix_required_tertiary_reserve_to_zero: True
+```
+
+> 旧キー `kind_of_formulation` も恒久的に許容される（自動的に `optimization_timing` として読み替え）。詳細は[「iv. ローリング最適化リスト設定」](../06_config/04_rolling_optimization_list.md#optimization_timing)を参照。

@@ -1,12 +1,18 @@
 # エネルギー貯蔵システム（ESS）に関する定数
 
+> **注**: 本ページの ΔkW／kWh／p^id 等の項目は ΔkW価値考慮版（`formulation_type: "delta-kW-bid"`）でのみ使用される。`delta-kW-no-market`（既定）では参照されない。
+
+## 両モード共通の定数
+
+`delta-kW-no-market` / `delta-kW-bid` のどちらでも使用される、蓄電量ペナルティ・充放電能力・効率・蓄電容量などの定数。
+
 $$
 \begin{array}{ll}
       C_{ess}^{\text{short}}
-       & : エネルギー貯蔵システム ess の蓄電量計画不足分ペナルティ係数　[千円/\text{MWh}]
+       & : エネルギー貯蔵システム ess の蓄電量計画不足分ペナルティ係数 [千円/\text{MWh}]
       \\
       C_{ess}^{\text{surplus}}
-       & : エネルギー貯蔵システム ess の蓄電量計画余剰分ペナルティ係数　[千円/\text{MWh}]
+       & : エネルギー貯蔵システム ess の蓄電量計画余剰分ペナルティ係数 [千円/\text{MWh}]
       \\
       P_{ess}^{\text{discharge}\,\text{MAX}}
        & :エネルギー貯蔵システム ess の最大発電能力 [\text{MW}]
@@ -55,5 +61,45 @@ $$
       \\
       E_{t,ess}^{\text{INHE}}
        & : 前回最適化で決定された時刻 t におけるエネルギー貯蔵システム ess の蓄電量 [\text{MWh}]
+\end{array}
+$$
+
+## `delta-kW-bid` のみで使用される定数（前日計画）
+
+三次調整力（ΔkW、kW価値）の調達費単価。
+
+$$
+\begin{array}{ll}
+      C_{ess}^{\Delta\text{kW}\,\text{UP}}
+       & : エネルギー貯蔵システム ess の三次上げ調整力（ΔkW）の調達費単価 [千円/\text{MW}]
+      \\
+      C_{ess}^{\Delta\text{kW}\,\text{DOWN}}
+       & : エネルギー貯蔵システム ess の三次下げ調整力（ΔkW）の調達費単価 [千円/\text{MW}]
+\end{array}
+$$
+
+## `delta-kW-bid` のみで使用される定数（当日計画）
+
+三次調整電力量（kWh）の調達費単価、および前日計画から引き継ぐ充放電力平均値・三次調整力（ΔkW）。
+
+$$
+\begin{array}{ll}
+      C_{ess}^{\text{kWh}\,\text{UP}}
+       & : エネルギー貯蔵システム ess の三次上げ調整電力量（kWh）の調達費単価 [千円/\text{MWh}]
+      \\
+      C_{ess}^{\text{kWh}\,\text{DOWN}}
+       & : エネルギー貯蔵システム ess の三次下げ調整電力量（kWh）の調達費単価 [千円/\text{MWh}]
+      \\
+      P_{t,ess}^{\text{da},\text{discharge}}
+       & : 前日計画で決定された時刻 t におけるエネルギー貯蔵システム ess の発電出力平均値 [\text{MW}]
+      \\
+      P_{t,ess}^{\text{da},\text{charge}}
+       & : 前日計画で決定された時刻 t におけるエネルギー貯蔵システム ess の充電力平均値 [\text{MW}]
+      \\
+      P_{t,ess}^{\text{da},\Delta\text{kW}\,\text{Tert}\,\text{UP}}
+       & : 前日計画で決定された時刻 t におけるエネルギー貯蔵システム ess の三次上げ調整力（ΔkW）[\text{MW}]
+      \\
+      P_{t,ess}^{\text{da},\Delta\text{kW}\,\text{Tert}\,\text{DOWN}}
+       & : 前日計画で決定された時刻 t におけるエネルギー貯蔵システム ess の三次下げ調整力（ΔkW）[\text{MW}]
 \end{array}
 $$

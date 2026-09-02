@@ -161,3 +161,54 @@ config_name: "Example 13"
 start_date: "2016-04-01"
 time_series_granularity: 120
 ```
+
+## Example 14: Switching to the ΔkW-value version (considering the balancing market)
+
+The formulation style is switched with [`formulation_type`](../06_config/03_unit_commitment.md#formulation_type).
+The default is `delta-kW-no-market`, and specifying `"delta-kW-bid"` selects the ΔkW-value version (considering the balancing market).
+
+```yaml
+config_name: "Example 14"
+start_date: "2016-04-01"
+formulation_type: "delta-kW-bid"
+```
+
+- If `formulation_type` is **omitted, it operates as `delta-kW-no-market`** (default) (Examples 1–13 are all `delta-kW-no-market`).
+- When specifying `delta-kW-bid`, prepare the ΔkW/kWh-related columns (such as `C_Delta_kW_UP`) in the generation and ESS CSV files. If a column is missing, it is filled with `0.0` (or the default value), and the missing columns are output to the WARNING log (see ["5. How to describe a CSV file"](../05_csvfile/02_generation.md)).
+
+### `optimization_timing` when writing `rolling_opt_list` directly
+
+In automatic generation (specifying `start_date`/`start_month` as in Examples 1–4), whether each run is day-ahead or intra-day scheduling is assigned automatically, so there is no need to write `optimization_timing`.
+
+On the other hand, when **writing `rolling_opt_list` directly** as in Example 5, with `delta-kW-bid` you specify explicitly with `optimization_timing` whether each element is day-ahead scheduling (`day-ahead`) or intra-day scheduling (`intra-day`) (because the ΔkW-value version switches the formulation on this time axis). With `delta-kW-no-market`, it can be omitted (default `day-ahead`).
+
+```yaml
+config_name: "Example 14b"
+formulation_type: "delta-kW-bid"
+rolling_opt_list:
+  - name: "2016-04-01_day-ahead_scheduling"
+    start_time: "2016-03-31 13:00:00"
+    end_time: "2016-04-02 00:00:00"
+    pre_period_hours: 24
+    optimization_timing: "day-ahead"
+    pv_value:
+      "2016-03-31 13:00:00": "ACT"
+      "2016-04-01 01:00:00": "FCST"
+    wf_value:
+      "2016-03-31 13:00:00": "ACT"
+      "2016-04-01 01:00:00": "FCST"
+    pickup_start_time_in_result_file: "2016-04-01 01:00:00"
+  - name: "2016-04-01_intra-day_scheduling"
+    start_time: "2016-04-01 01:00:00"
+    end_time: "2016-04-02 00:00:00"
+    pre_period_hours: 24
+    optimization_timing: "intra-day"
+    pv_value:
+      "2016-04-01 01:00:00": "ACT"
+    wf_value:
+      "2016-04-01 01:00:00": "ACT"
+    fix_tie_margin_to_zero: True
+    fix_required_tertiary_reserve_to_zero: True
+```
+
+> The legacy key `kind_of_formulation` is also permanently allowed (automatically interpreted as `optimization_timing`). For details, see ["iv. Rolling optimized list settings"](../06_config/04_rolling_optimization_list.md#optimization_timing).

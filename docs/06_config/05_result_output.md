@@ -30,7 +30,7 @@
 ### export_xlsx_file
 
 - **書式: ブール値 or 辞書型**
-- **デフォルト値: `{"shadow_price": True, "generaion": False,"ESS": False, "tie": True}`**
+- **デフォルト値: `{"shadow_price": True, "generation": False,"ESS": False, "tie": True}`**
 
 関数「make_grb_model」の中で、最適化結果をxlsxファイルに保存するか否かを決める変数。
 
@@ -66,7 +66,7 @@ export_xlsx_file: {"generation": True, "ESS": True}
 
 ```yaml
 {
-  "bar"{
+  "bar": {
     "Others": {"solidFill": "4F6228", "line": {"solidFill": "4F6228", "width": 1.5},},  # 暗い黄緑,
     "HYDRO": {
         "pattFill": {
@@ -280,8 +280,8 @@ export_xlsx_file: {"generation": True, "ESS": True}
             "background": "FFFFFF",
         },
     },
-  }
-  "line" {
+  },
+  "line": {
     "Demand": {"line": {"solidFill": "7F7F7F"}},  # とても暗い無彩色
     "Output": {"line": {"solidFill": "5D4971", "width": 3}},  # 暗い灰みの紫
     "Max Output": {"line": {"solidFill": "376092", "width": 1.5}},  # 深い青紫

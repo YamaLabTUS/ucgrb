@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from ._version import __version__
 from .make_grb_model import make_grb_model
 from .output_result import output_result
 from .stopwatch import StopWatch
@@ -9,6 +10,7 @@ from .uc_vars import UCVars
 from .ucgrb import ucgrb
 
 __all__ = [
+    "__version__",
     "ucgrb",
     "UCData",
     "UCDicts",
